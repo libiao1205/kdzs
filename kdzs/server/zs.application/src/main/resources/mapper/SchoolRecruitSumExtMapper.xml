@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sundeinfo.kd.zs.dao.SchoolRecruitSumExtMapper">
+  <resultMap id="BaseResultMap" type="com.sundeinfo.kd.zs.dto.apis.school.RecruitSumStatisticsDTO">
+    <constructor>
+      <arg column="sumPeople" javaType="java.lang.Double" jdbcType="INTEGER" />
+      <arg column="undergraduatePeople" javaType="java.lang.Double" jdbcType="INTEGER" />
+      <arg column="technicalPeople" javaType="java.lang.Double" jdbcType="INTEGER" />
+      <arg column="gkPeople" javaType="java.lang.Double" jdbcType="INTEGER" />
+      <arg column="recruitSeason" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+
+    <resultMap id="StatisticsDetailMap" type="com.sundeinfo.kd.zs.dto.apis.school.RecruitSumStatisticsDetailDTO">
+        <constructor>
+            <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="sort" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="recruitCount" javaType="java.lang.Double" jdbcType="INTEGER" />
+            <arg column="undergraduatePeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="technicalPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="gkPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="sumPeople" javaType="java.lang.Double" jdbcType="INTEGER" />
+        </constructor>
+    </resultMap>
+    <resultMap id="recruitCountMap" type="com.sundeinfo.kd.zs.dto.apis.school.RecruitSumStatisticsDTO">
+        <constructor>
+            <arg column="undergraduatePeople" javaType="java.lang.Double" jdbcType="INTEGER" />
+            <arg column="technicalPeople" javaType="java.lang.Double" jdbcType="INTEGER" />
+            <arg column="gkPeople" javaType="java.lang.Double" jdbcType="INTEGER" />
+        </constructor>
+    </resultMap>
+
+
+  <select id="findAllStatistics" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultMap="BaseResultMap">
+      select (sum(resum.undergraduatePeople)+ sum(resum.technicalPeople)+sum(resum.gkPeople))sumPeople,
+      sum(resum.undergraduatePeople)undergraduatePeople,sum(resum.technicalPeople) technicalPeople,
+      sum(resum.gkPeople)gkPeople,season.recruitSeason,season.recruitYear from b_school_recruit_sum resum
+      join b_school_recruit_season season on resum.seasonId = season.id
+      join m_school school on resum.schoolId = school.id
+      where 1 = 1
+      <if test="schoolId != null and schoolId != 0">
+          and school.id = #{schoolId,jdbcType=INTEGER}
+      </if>
+      <if test="onRecruitYear != null">
+          and season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP}
+      </if>
+      <if test="recruitSeason != null">
+          and season.recruitSeason = #{recruitSeason,jdbcType=INTEGER}
+      </if>
+  </select>
+    <select id="findAllStatisticsDetail" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultMap="StatisticsDetailMap">
+        select school.name,sg.sort,plan.recruitCount recruitCount,sum(resum.undergraduatePeople) undergraduatePeople,
+        sum(resum.technicalPeople) technicalPeople,sum(resum.gkPeople) gkPeople,
+        (sum(resum.undergraduatePeople)+sum(resum.technicalPeople)+sum(resum.gkPeople))sumPeople
+        from m_school school
+        join b_school_recruit_plan plan on school.id = plan.schoolId join b_school_recruit_season season on plan.seasonId = season.id	and season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP} and season.recruitSeason = #{recruitSeason,jdbcType=TIMESTAMP}
+        left join b_school_recruit_sum resum on resum.schoolId = school.id and resum.seasonId = season.id
+        join m_school_group_detail detail on school.id = detail.schoolId join m_school_group sg on detail.groupId = sg.id
+        where 1 = 1
+        <if test="sort != 0">
+            and sg.sort = #{sort,jdbcType=INTEGER}
+        </if>
+        <if test="schoolId != null and schoolId != 0">
+            and school.id = #{schoolId,jdbcType=INTEGER}
+        </if>
+        group by school.id
+        order by sg.sort,school.sort,school.id
+    </select>
+
+    <select id="findAllStatisticsQuiJiCurrSeasonSumPeopleDetail" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultType="java.lang.Integer">
+        select  (sum(resum.undergraduatePeople)+sum(resum.technicalPeople)+sum(resum.gkPeople))currSeasonSumPeople
+        from m_school school
+        join b_school_recruit_plan plan on school.id = plan.schoolId join b_school_recruit_season season on plan.seasonId = season.id	and season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP} and season.recruitSeason = #{recruitSeason,jdbcType=TIMESTAMP}
+        left join b_school_recruit_sum resum on resum.schoolId = school.id and resum.seasonId = season.id
+        join m_school_group_detail detail on school.id = detail.schoolId join m_school_group sg on detail.groupId = sg.id
+        where 1 = 1
+        <if test="sort != 0">
+            and sg.sort = #{sort,jdbcType=INTEGER}
+        </if>
+        <if test="schoolId != null and schoolId != 0">
+            and school.id = #{schoolId,jdbcType=INTEGER}
+        </if>
+        group by school.id
+        order by sg.sort,school.sort,school.id
+    </select>
+    <select id="findAllRecruitCount" resultMap="recruitCountMap">
+        select sum(resum.undergraduatePeople)undergraduatePeople,sum(resum.technicalPeople) technicalPeople,
+        sum(resum.gkPeople)gkPeople
+        from b_school_recruit_sum resum
+        where 1 = 1
+        <if test="seasonId != null and seasonId != 0">
+            and resum.seasonId = #{seasonId,jdbcType=INTEGER}
+        </if>
+        <if test="schoolId != null and schoolId != 0">
+            and resum.schoolId = #{schoolId,jdbcType=INTEGER}
+        </if>
+    </select>
+</mapper>

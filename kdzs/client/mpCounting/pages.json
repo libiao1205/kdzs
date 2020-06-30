@@ -1,0 +1,79 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页,
+		{
+			"path": "pages/recruit/counting/homeAnime",
+			"style": {
+				"navigationBarTitleText": "",
+				"mp-weixin":{
+					"navigationStyle" : "custom"
+				}
+			}
+		},
+		{
+			"path": "pages/recruit/counting/home",
+			"style": {
+				"navigationBarTitleText": "",
+				"mp-weixin":{
+					"navigationStyle" : "custom"
+				}
+			}
+		},{
+		    "path" : "pages/recruit/counting/countDetail",
+		    "style" : {
+				"navigationBarTitleText": "统计详情"
+			}
+		}, {
+		    "path" : "pages/recruit/counting/counting",
+		    "style" : {
+				"navigationBarTitleText": "招生信息"
+			}
+		}, {
+		    "path" : "pages/recruit/counting/plan",
+		    "style" : {
+				"navigationBarTitleText": "招生计划"
+			}
+		}, {
+		    "path" : "pages/recruit/counting/revisePeople",
+		    "style" : {
+				"navigationBarTitleText": "校正人数"
+			}
+		}, {
+		    "path" : "pages/recruit/counting/season",
+		    "style" : {
+				"navigationBarTitleText": "招生季列表"
+			}
+		}, {
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		}, {
+			"path": "pages/user/login",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		}
+    ],
+	"tabBar": {
+		"color": "#7a7e83",
+		"selectedColor": "#000000",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/recruit/counting/home",
+			"text": "统计",
+			"iconPath": "static/img/counting.png",
+			"selectedIconPath": "static/img/countingHL.png"
+		}, 
+		{
+			"pagePath": "pages/user/user",
+			"text": "我的",
+			"iconPath": "static/img/user.png",
+			"selectedIconPath": "static/img/userHL.png"
+		}]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarBackgroundColor": "#FFFFFF",
+		"backgroundColor": "#fbf9fe"
+	}
+}

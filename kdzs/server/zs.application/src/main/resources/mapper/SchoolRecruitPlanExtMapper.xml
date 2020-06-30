@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sundeinfo.kd.zs.dao.SchoolRecruitPlanExtMapper">
+    <resultMap id="BaseResultMap" type="com.sundeinfo.kd.zs.dto.apis.school.SchoolRecruitPlanDTO">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <idArg column="schoolId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <idArg column="seasonId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="recruitCount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="recruitPlan" javaType="java.lang.Boolean" jdbcType="BIT" />
+
+        </constructor>
+    </resultMap>
+    <resultMap id="StatisticPlanMap" type="com.sundeinfo.kd.zs.dto.apis.school.SchoolRecruitPlanDTO">
+        <constructor>
+            <arg column="gkpeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="technicalpeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="undergraduatepeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+        </constructor>
+    </resultMap>
+
+    <select id="findAllPlanRecruitPlan"  resultMap="StatisticPlanMap">
+        select sum(plan.recruitCount)recruitCount,sum(plan.undergraduatePeople) undergraduatepeople,sum(plan.technicalPeople) technicalpeople,sum(plan.gkPeople) gkpeople from b_school_recruit_plan plan
+        where 1 = 1
+        <if test="seasonId != null and seasonId != 0">
+            and plan.seasonId = #{seasonId,jdbcType=INTEGER}
+        </if>
+        <if test="schoolId != null and schoolId != 0">
+            and plan.schoolId = #{schoolId,jdbcType=INTEGER}
+        </if>
+    </select>
+    <update id="updateByPrimaryKeySelectiveExt" parameterType="com.sundeinfo.kd.zs.dao.model.SchoolRecruitPlan">
+        update b_school_recruit_plan
+        <set>
+            <if test="recruitcount != null">
+                recruitCount = #{recruitcount,jdbcType=INTEGER},
+            </if>
+            <if test="gkpeople != null">
+                gkpeople = #{gkpeople,jdbcType=INTEGER},
+            </if>
+            <if test="technicalpeople != null">
+                technicalpeople = #{technicalpeople,jdbcType=INTEGER},
+            </if>
+            <if test="undergraduatepeople != null">
+                undergraduatepeople = #{undergraduatepeople,jdbcType=INTEGER},
+            </if>
+            <if test="recruitplan != null">
+                recruitPlan = #{recruitplan,jdbcType=BIT},
+            </if>
+            <if test="isdelete != null">
+                isdelete = #{isdelete,jdbcType=BIT},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createby != null">
+                createby = #{createby,jdbcType=INTEGER},
+            </if>
+            <if test="updatetime != null">
+                updatetime = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateby != null">
+                updateby = #{updateby,jdbcType=INTEGER},
+            </if>
+        </set>
+        where 1 = 1
+        <if test="id != null">
+            and id = #{id,jdbcType=INTEGER}
+        </if>
+        and schoolId = #{schoolid,jdbcType=INTEGER}
+        and seasonId = #{seasonid,jdbcType=INTEGER}
+    </update>
+</mapper>

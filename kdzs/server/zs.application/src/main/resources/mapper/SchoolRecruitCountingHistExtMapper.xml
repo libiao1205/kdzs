@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sundeinfo.kd.zs.dao.SchoolRecruitCountingHistExtMapper">
+    <resultMap id="BaseResultMap" type="com.sundeinfo.kd.zs.dto.apis.school.RecruitCountingHistDTO">
+        <constructor>
+            <arg column="undergraduatePeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="technicalPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="gkPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+            <arg column="updateTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        </constructor>
+    </resultMap>
+
+
+    <select id="selectHistory" parameterType="com.sundeinfo.kd.zs.dao.model.SchoolRecruitCountingHist" resultMap="BaseResultMap">
+        select hist.undergraduatePeople,hist.technicalPeople,hist.gkPeople,u.name,hist.updatetime updateTime from b_school_recruit_counting_hist hist
+              join u_user u on hist.createby = u.id
+        <where>
+            <if test="seasonid != null">
+                hist.seasonId= #{seasonid,jdbcType=INTEGER}
+            </if>
+            <if test="schoolid != null">
+                and  hist.schoolId = #{schoolid,jdbcType=INTEGER}
+            </if>
+            <if test="recruitdate != null">
+                and  hist.recruitDate = #{recruitdate,jdbcType=DATE}
+            </if>
+        </where>
+          order by hist.updatetime desc
+    </select>
+</mapper>

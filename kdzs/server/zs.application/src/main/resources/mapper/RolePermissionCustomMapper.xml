@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sundeinfo.kd.zs.dao.custom.RolePermissionCustomMapper">
+
+  <select id="selectRolePermission" parameterType="java.util.List"
+          resultType="com.sundeinfo.kd.zs.dto.sys.UserPermissionDTO">
+        select
+            distinct
+            up.id
+            ,up.permissionCode
+            ,up.description
+        from
+            u_role_permission urp
+            inner join
+                u_permission up
+            on urp.permissionId = up.id
+        where
+            urp.roleId in
+            <foreach item="item" index="index" collection="roleIds" open="(" separator="," close=")">
+              #{item,jdbcType=INTEGER}
+            </foreach>
+  </select>
+
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sundeinfo.kd.zs.dao.custom.SchoolTeacherCustomMapper">
+
+  <select id="selectSchoolTeacher" parameterType="java.lang.Integer"
+          resultType="com.sundeinfo.kd.zs.dao.custom.model.SchoolTeacherCustom">
+        select
+            school.id as schoolId
+            ,school.name as schoolName
+            ,school.shortName as schoolShortName
+        from
+            b_school_teacher st
+            inner join
+                m_school school
+            on st.schoolId = school.id
+        where
+            st.userId = #{userId}
+  </select>
+
+</mapper>

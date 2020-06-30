@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sundeinfo.kd.zs.dao.custom.UserRoleCustomMapper">
+
+  <select id="selectUserRole" parameterType="java.lang.Integer"
+          resultType="com.sundeinfo.kd.zs.dto.sys.UserRoleDTO">
+        select
+            uur.userId
+            ,uur.roleId as id
+            ,ur.name as roleName
+            ,ur.code as roleCode
+        from
+            u_user_role uur
+            inner join
+                u_role ur
+            on uur.roleId = ur.id
+        where
+            uur.userId = #{userId}
+  </select>
+
+</mapper>

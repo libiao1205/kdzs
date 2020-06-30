@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sundeinfo.kd.zs.dao.SchoolExtMapper">
+  <resultMap id="BaseResultMap" type="com.sundeinfo.kd.zs.dto.apis.school.SchoolDTO">
+    <constructor>
+      <idArg column="schoolId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="shortname" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="areaId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="recruitPlan" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="recruitCount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <resultMap id="SelectSchoolMap" type="com.sundeinfo.kd.zs.dto.apis.school.SchoolDTO">
+    <constructor>
+      <arg column="schoolId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="planId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="recruitPlan" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="recruitCount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="gkPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="technicalPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="undergraduatePeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <resultMap id="SelectSchoolRevisePeopleMap" type="com.sundeinfo.kd.zs.dto.apis.school.SchoolDTO">
+    <constructor>
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="schoolId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="undergraduatePeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="technicalPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="gkPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="revise" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+
+  <select id="selectCurrUserSchool" resultMap="BaseResultMap">
+    select s.id schoolId, s.name, s.shortName, s.areaId,plan.recruitPlan,plan.recruitCount from u_user u
+    join b_school_teacher b on u.id = b.userId join m_school s on b.schoolId = s.id
+    join b_school_recruit_plan plan on s.id = plan.schoolId
+    where plan.seasonId = #{seasonId,jdbcType=INTEGER} and u.id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectSchoolAll" resultType="java.lang.String">
+    select school.name from m_school school
+  </select>
+
+
+  <select id="selectSchoolByNamePlan" resultMap="SelectSchoolMap">
+    select plan.id planId,plan.recruitplan recruitPlan,school.id schoolId,school.name,plan.recruitCount,
+    plan.gkPeople,
+    plan.technicalPeople,
+    plan.undergraduatePeople
+    from m_school school
+    left join b_school_recruit_plan plan on plan.schoolId = school.id
+      and plan.seasonId = #{seasonId,jdbcType=INTEGER}
+    <where>
+      school.name like "%"#{name,jdbcType=VARCHAR}"%"
+    </where>
+  </select>
+
+  <select id="selectSchoolByNameRevisePeople" resultMap="SelectSchoolRevisePeopleMap">
+    select school.name,school.id schoolId,recruitSum.undergraduatePeople,recruitSum.technicalPeople,recruitSum.gkPeople,recruitSum.revise from m_school school
+    join b_school_recruit_plan plan on plan.schoolId = school.id and plan.seasonId = #{seasonId,jdbcType=INTEGER}
+    left join b_school_recruit_sum recruitSum on school.id = recruitSum.schoolId and recruitSum.seasonId = #{seasonId,jdbcType=INTEGER}
+    <where>
+      plan.recruitPlan = 1 and
+      school.name like "%"#{name,jdbcType=VARCHAR}"%"
+    </where>
+  </select>
+</mapper>

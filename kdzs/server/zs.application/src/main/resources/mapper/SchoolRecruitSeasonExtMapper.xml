@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sundeinfo.kd.zs.dao.SchoolRecruitSeasonExtMapper">
+  <resultMap id="BaseResultMap" type="com.sundeinfo.kd.zs.dto.apis.school.CurrSeasonDTO">
+    <constructor>
+      <arg column="seasonId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="recruitYear" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="recruitSeason" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="recruitStartDate" javaType="java.util.Date" jdbcType="DATE" />
+      <arg column="recruitEndDate" javaType="java.util.Date" jdbcType="DATE" />
+    </constructor>
+  </resultMap>
+
+  <select id="selectByCurrSeason" resultMap="BaseResultMap">
+      select season.id seasonId,season.recruitYear,season.recruitSeason,season.recruitStartDate,season.recruitEndDate from b_school_recruit_season season
+			left join b_school_recruit_plan plan on season.id = plan.seasonId
+      where date_format(now(),'%Y-%m-%d') >= date_format(season.recruitStartDate,'%Y-%m-%d') and date_format(season.recruitEndDate,'%Y-%m-%d') >= date_format(now(),'%Y-%m-%d')
+      group by season.id
+  </select>
+
+  <select id="selectByStatus" resultType="java.lang.Integer">
+      select season.id from b_school_recruit_season season where date_format(now(),'%Y-%m-%d') > date_format(season.recruitEndDate,'%Y-%m-%d') and season.status = 0
+  </select>
+
+  <select id="selectByOnRecruitYear" resultType="java.lang.Integer">
+    select season.id from b_school_recruit_season season
+    where season.recruitYear = #{recruitYear,jdbcType=VARCHAR} and season.recruitSeason = #{recruitSeason,jdbcType=INTEGER}
+  </select>
+
+  <select id="seasonIsExist" parameterType="com.sundeinfo.kd.zs.dto.apis.school.RecruitSeasonDTO" resultType="java.lang.Long">
+   select count(*) from b_school_recruit_season season where (season.recruitYear = #{recruitYear,jdbcType=VARCHAR} or
+                    (
+                        (season.recruitStartDate >= DATE_FORMAT(#{startDate,jdbcType=VARCHAR},'%y-%m-%d') and DATE_FORMAT(#{endDate,jdbcType=VARCHAR},'%y-%m-%d') > season.recruitStartDate)
+                        or (DATE_FORMAT(#{startDate,jdbcType=VARCHAR},'%y-%m-%d') >= season.recruitStartDate and season.recruitEndDate > DATE_FORMAT(#{startDate,jdbcType=VARCHAR},'%y-%m-%d'))
+                    ))
+                <if test="id != null">
+                  and season.recruitSeason = #{recruitSeason,jdbcType=INTEGER}
+                </if>
+                <if test="id != null">
+                 and season.id != #{id,jdbcType=INTEGER}
+                </if>
+  </select>
+
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.sundeinfo.kd.zs.dto.apis.school.RecruitSeasonDTO">
+    insert into b_school_recruit_season
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="recruitYear != null">
+        recruitYear,
+      </if>
+      <if test="recruitSeason != null">
+        recruitSeason,
+      </if>
+      <if test="startDate != null">
+        recruitStartDate,
+      </if>
+      <if test="endDate != null">
+        recruitEndDate,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="isDelete != null">
+        isdelete,
+      </if>
+      <if test="createTime != null">
+        createtime,
+      </if>
+      <if test="createBy != null">
+        createby,
+      </if>
+      <if test="updateTime != null">
+        updatetime,
+      </if>
+      <if test="updateBy != null">
+        updateby,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="recruitYear != null">
+        #{recruitYear,jdbcType=VARCHAR},
+      </if>
+      <if test="recruitSeason != null">
+        #{recruitSeason,jdbcType=BIT},
+      </if>
+      <if test="recruitStartDate != null">
+        #{recruitStartDate,jdbcType=DATE},
+      </if>
+      <if test="recruitEndDate != null">
+        #{recruitEndDate,jdbcType=DATE},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByStatus" parameterType="java.lang.Integer">
+      update b_school_recruit_season season set season.status = 1 where season.id in (${id})
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.sundeinfo.kd.zs.dto.apis.school.RecruitSeasonDTO">
+    update b_school_recruit_season
+    set
+    <if test="recruitYear!=null and recruitYear !='' ">
+      recruitYear = #{recruitYear,jdbcType=VARCHAR},
+    </if>
+   <if test="recruitSeason!=null">
+     recruitSeason = #{recruitSeason,jdbcType=BIT},
+   </if>
+    <if test="recruitStartDate!=null">
+      recruitStartDate = #{recruitStartDate,jdbcType=DATE},
+    </if>
+    <if test="recruitEndDate!=null">
+      recruitEndDate = #{recruitEndDate,jdbcType=DATE},
+    </if>
+    <if test="status!=null">
+      status = #{status,jdbcType=BIT},
+    </if>
+    <if test="isDelete !=null">
+      isdelete = #{isDelete,jdbcType=BIT},
+    </if>
+    createtime = #{createTime,jdbcType=TIMESTAMP},
+    createby = #{createBy,jdbcType=INTEGER},
+    updatetime = #{updateTime,jdbcType=TIMESTAMP},
+    updateby = #{updateBy,jdbcType=INTEGER}
+    where
+    id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

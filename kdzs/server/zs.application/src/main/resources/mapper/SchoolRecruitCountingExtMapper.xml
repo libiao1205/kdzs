@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sundeinfo.kd.zs.dao.SchoolRecruitCountingExtMapper">
+    <resultMap id="BaseResultMap" type="com.sundeinfo.kd.zs.dao.model.SchoolRecruitCounting">
+        <constructor>
+            <idArg column="seasonId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <idArg column="schoolId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <idArg column="recruitDate" javaType="java.util.Date" jdbcType="DATE" />
+            <arg column="undergraduatePeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="technicalPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="gkPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="isdelete" javaType="java.lang.Boolean" jdbcType="BIT" />
+            <arg column="createtime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+            <arg column="createby" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="updatetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+            <arg column="updateby" javaType="java.lang.Integer" jdbcType="INTEGER" />
+        </constructor>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        c.seasonId, c.schoolId, c.recruitDate, c.undergraduatePeople, c.technicalPeople, c.gkPeople,
+        c.isdelete, c.createtime, c.createby, c.updatetime, c.updateby
+    </sql>
+
+    <select id="queryByPrimaryKey" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitCountingSearchDTO" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+          from b_school_recruit_counting c join b_school_recruit_season s on c.seasonId = s.id
+        <where>
+
+            <if test="seasonId != null">
+                c.seasonId= #{seasonId,jdbcType=INTEGER}
+            </if>
+            <if test="schoolId != null">
+                and c.schoolId = #{schoolId,jdbcType=INTEGER}
+            </if>
+            <if test="type != null and type == 1">
+                and  c.recruitDate > DATE_SUB(CURDATE(), INTERVAL 3 DAY)
+            </if>
+            <if test="type != null and type == 2">
+                and  c.recruitDate > DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            </if>
+            <if test="type != null and type == 3">
+                and  c.recruitDate > DATE_SUB(CURDATE(), INTERVAL 1 month)
+            </if>
+            <if test="type != null and type == 4">
+                and  date_format(c.recruitDate,'%Y-%m-%d') >= date_format(s.recruitStartDate,'%Y-%m-%d') and date_format(s.recruitEndDate,'%Y-%m-%d') >= date_format(c.recruitDate,'%Y-%m-%d')
+            </if>
+        </where>
+        order by createtime desc
+    </select>
+
+</mapper>

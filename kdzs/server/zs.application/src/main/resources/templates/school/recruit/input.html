@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no;"/>
+
+    <title>上海开放大学招生统计</title>
+
+    <link href="/kdzs/static/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/kdzs/static/js/plugins/mydatepicker/myDatepicker.css" rel="stylesheet" media="screen">
+    <link href="/kdzs/static/css/style.min.css" rel="stylesheet">
+	<link href="/kdzs/static/css/plugins/jqueryxtiper/xtiper.css" rel="stylesheet">
+
+</head>
+
+<body class="top-navigation">
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg" style="padding:0">
+            <div class="row white-bg"
+                style="padding:10px;display:block;text-align: center;border-bottom: 4px solid #1ab394;">
+                <img src="/kdzs/static/img/zhaoshen.png">
+            </div>
+			<div style="text-align: center;">
+				<h2 id="lblSchoolName"></h2>
+			</div>
+            <div class="wrapper wrapper-content" style="padding:0;margin:0 0">
+                <div class="d-flex flex-column">
+					<div class="ibox">
+						<div class="ibox-title d-flex flex-row justify-content-between align-items-center" style="padding:0 10px">
+							<span style="font-weight:bold;">招生人数</span>
+							<input id="txtRecriutDate" class="label label-success" style="text-align: center; width: 90px"></input>
+						</div>
+						<div class="ibox-content">
+							  <div class="form-group">
+								<label>本科招生人数：</label>
+								<input id="txtUndergraduatePeople" type="number" value="0" />
+							  </div>
+							  <div class="form-group">
+								<label >专科招生人数：</label>
+								<input id="txtTechnicalPeople" type="number" value="0"  />
+							  </div>
+							  <div class="form-group">
+								<label >国开招生人数：</label>
+								<input id="txtGkPeople" type="number" value="0"  />
+							  </div>
+							  <div class="d-flex flex-column-reverse">
+								<button type="button" id="btnSubmit" class="btn btn-primary">提交</button>
+							  </div>
+						</div>
+					</div>
+					<div class="ibox">
+						<div class="ibox-title d-flex flex-row justify-content-between align-items-center" style="padding:0 10px">
+							<span style="font-weight:bold;">填写记录</span>
+							<input id="txtRecriutDateHist" class="label label-success" style="text-align: center; width: 90px"></input>
+						</div>
+						<div class="ibox-content">
+							<table class="table">
+							  <thead>
+								<tr>
+								  <th scope="col">本科</th>
+								  <th scope="col">专科</th>
+								  <th scope="col">国开</th>
+								  <th scope="col">填写人</th>
+								  <th scope="col">更新日期</th>
+								</tr>
+							  </thead>
+							  <tbody id="tableListHist">
+							  </tbody>
+							</table>
+						</div>
+					</div>
+					<div class="ibox">
+						<div class="ibox-title d-flex flex-row justify-content-between align-items-center" style="padding:0 10px">
+							<span style="font-weight:bold;">最新招生情况</span>
+							<div>
+								<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+								  <button type="button" id="btnFilterDay" class="btn btn-success">近三天</button>
+								  <button type="button" id="btnFilterWeek" class="btn btn-success">近一周</button>
+								  <button type="button" id="btnFilterMonth" class="btn btn-success">近一个月</button>
+								</div>
+							</div>
+						</div>
+						<div class="ibox-content">
+							<table class="table">
+							  <thead>
+								<tr>
+								  <th scope="col">日期</th>
+								  <th scope="col">本科</th>
+								  <th scope="col">专科</th>
+								  <th scope="col">国开</th>
+								</tr>
+							  </thead>
+							  <tbody id="tableList">
+							  </tbody>
+							</table>
+						</div>
+					</div>                  
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- Mainly scripts -->
+	<script src="/kdzs/static/js/jquery-3.1.1.min.js"></script>
+	<script src="/kdzs/static/js/bootstrap.min.js"></script>
+
+	<!-- Custom and plugin javascript -->
+	<script src="/kdzs/static/js/plugins/mydatepicker/myDatepicker.js"></script>
+	<script src="/kdzs/static/js/plugins/jqueryxtiper/xtiper.min.js"></script>
+
+	<!-- 业务相关-->
+	<script src="/kdzs/static/js/common/userUtils.js"></script>
+	<script src="/kdzs/static/js/common/requestServer.js"></script>
+	<script src="/kdzs/static/js/common/systemUtils.js"></script>
+	<script src="/kdzs/static/js/common/dateUtils.js"></script>
+	<script>
+		var schoolId = "";
+		var now = new Date();
+		$(document).ready(function () {
+			let userInfo = userUtils.getUserInfo();
+			let nowString = dateUtils.format(now, "yyyy-MM-dd");
+			$("#txtRecriutDate").myDatePicker({
+				'startDate': "1980-01-01",
+				'endDate': nowString,
+				//定位方式是否用fixed
+				positionFixed:true,
+			});
+			$("#txtRecriutDateHist").myDatePicker({
+				'startDate': "1980-01-01",
+				'endDate': nowString,
+				//定位方式是否用fixed
+				positionFixed:true,
+			});
+
+			$("#txtRecriutDate").blur(() =>{
+				$("#txtRecriutDateHist").val($("#txtRecriutDate").val());
+				loadTodayData(schoolId, $("#txtRecriutDate").val());
+				loadHistData(schoolId, $("#txtRecriutDate").val());
+			});
+
+			$("#txtRecriutDateHist").blur(() =>{
+				$("#txtRecriutDate").val($("#txtRecriutDateHist").val());
+				loadTodayData(schoolId, $("#txtRecriutDateHist").val());
+				loadHistData(schoolId, $("#txtRecriutDateHist").val());
+			});
+
+			if (!userInfo.organizations) {
+				return;
+			}
+			schoolId = userInfo.organizations[0].id;
+
+			$("#lblSchoolName").html(userInfo.organizations[0].name);
+
+			$("#btnSubmit").click(() =>{
+				submitData(schoolId, $("#txtRecriutDate").val());
+			});
+
+			$("#btnFilterDay").click(() =>{
+				loadData(schoolId , 1);
+			});
+
+			$("#btnFilterWeek").click(() =>{
+				loadData(schoolId , 2);
+			});
+
+			$("#btnFilterMonth").click(() =>{
+				loadData(schoolId , 3);
+			});
+			loadTodayData(schoolId, nowString);
+			loadHistData(schoolId, nowString);
+
+			loadData(schoolId , 1);
+		});
+		// 提交信息
+		function submitData(schoolId, recruitDate) {
+			let loadid = xtip.load();
+			let technicalPeople = $("#txtTechnicalPeople").val();
+			let undergraduatePeople = $("#txtUndergraduatePeople").val();
+			let gkPeople =  $("#txtGkPeople").val();
+
+			let data = {
+				"schoolId": schoolId,
+				"technicalPeople": technicalPeople,
+				"undergraduatePeople": undergraduatePeople,
+				"gkPeople": gkPeople
+			};
+
+			if (recruitDate !== undefined && recruitDate !== "") {
+				data.recruitDate = recruitDate.split("-").join("");
+			}
+
+			requestServer.ajax({
+				url:'/kdzs/api/school/recruit',
+				type:'POST',
+				data: JSON.stringify(data),
+				contentType:'application/json',
+				dataType:'json',
+				success:(res) =>{
+					xtip.close(loadid);
+					if (res.c ===0 ) {
+						loadHistData(schoolId, recruitDate);
+						loadData(schoolId , 1);
+						xtip.confirm('更新成功', function(){
+							requestServer.gotoUrl("/kdzs/school/recruit/index");
+						},{icon:'success',title:"操作", btn:["确定"]});
+					} else {
+						xtip.msg(res.msg,{icon:'error'});
+					}
+
+				}
+			});
+		}
+
+		// 获取今天的招生人数
+		function loadTodayData(schoolId, recruitDate) {
+
+			if (recruitDate) {
+				recruitDate = recruitDate.split("-").join("");
+			}
+			let data = {recruitDate: recruitDate};
+			requestServer.ajax({
+				url:'/kdzs/api/school/recruit/today/' + schoolId,
+				type:'GET',
+				data: data ,
+				dataType:'json',
+				success:function(res){
+					if (res.c ===0 ) {
+						$("#txtTechnicalPeople").val(res.ctt.technicalPeople);
+						$("#txtUndergraduatePeople").val(res.ctt.undergraduatePeople);
+						$("#txtGkPeople").val(res.ctt.gkPeople);
+					}
+				}
+			});
+		}
+		// 获取区间的招生人数
+		function loadData(schoolId, rangeType) {
+			requestServer.ajax({
+				url:'/kdzs/api/school/recruit/list/' + schoolId + "/" + rangeType,
+				type:'GET',
+				data:{},
+				dataType:'json',
+				success:function(res){
+					if (res.c ===0 ) {
+						$("#tableList").html("");
+						res.ctt.forEach((item) => {
+							$("#tableList").append(`
+							 <tr>
+							 	 <td>${item.recruitDate}</td>
+								 <td>${item.undergraduatePeople}</td>
+								 <td>${item.technicalPeople}</td>
+								 <td>${item.gkPeople}</td>
+							 </tr>
+							`);
+						});
+					}
+				}
+			});
+		}
+		// 获取填写记录
+		function loadHistData(schoolId, recruitDate) {
+			if (recruitDate) {
+				recruitDate = recruitDate.split("-").join("");
+			}
+			let data = {recruitDate: recruitDate};
+
+			requestServer.ajax({
+				url:'/kdzs/api/school/recruit/list/hist/' + schoolId,
+				type:'GET',
+				data: data,
+				dataType:'json',
+				success:function(res){
+					if (res.c ===0 ) {
+						$("#tableListHist").html("");
+						res.ctt.forEach((item) => {
+							$("#tableListHist").append(`
+							 <tr>
+								 <td>${item.undergraduatePeople}</td>
+								 <td>${item.technicalPeople}</td>
+								 <td>${item.gkPeople}</td>
+								 <td>${item.userName}</td>
+								 <td>${item.writeDate}</td>
+							 </tr>
+							`)
+						});
+					}
+				}
+			});
+		}
+
+	</script>
+</body>
+
+</html>

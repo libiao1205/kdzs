@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no;"/>
+
+    <title>上海开放大学招生统计</title>
+
+    <link href="/kdzs/static/css/bootstrap.min.css" rel="stylesheet">
+<!--    <link href="/kdzs/static/font-awesome/css/font-awesome.css" rel="stylesheet">-->
+<!--    <link href="/kdzs/static/css/animate.css" rel="stylesheet">-->
+    <link href="/kdzs/static/css/style.min.css" rel="stylesheet">
+    <link href="/kdzs/static/css/plugins/jqueryxtiper/xtiper.css" rel="stylesheet">
+
+</head>
+
+<body class="top-navigation">
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg" style="padding: 0">
+            <div class="row white-bg"
+                style="padding:10px;display:block;text-align: center;border-bottom: 4px solid #1ab394;">
+                <img src="/kdzs/static/img/zhaoshen.png">
+            </div>
+            <div class="wrapper wrapper-content" style="padding: 20px 0px">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <div class="ibox-tools">
+                                        <span id="lblUndergraduateSumDay" class="label label-success float-right"></span>
+                                    </div>
+                                    <h5>本科招生数</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="d-flex flex-row justify-content-between align-items-center">
+                                        <h1 class="no-margins"><span id="lblUndergraduatePeople">0</span>人</h1>
+                                        <a id="btnEditUndergraduatePeople" style="display:none" href="/kdzs/school/recruit/input">
+                                            <svg class="bi bi-pencil" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z" clip-rule="evenodd"/>
+                                                <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div class="stat-percent font-bold text-warning"><span id="lblUndergraduatePeopleRate">0</span>% <i id="iconUndergraduatePeopleRate"
+                                            class="fa fa-level-down"></i></div>
+                                    <small>昨日数量：<span id="lblUndergraduatePeopleYesterday">0</span></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <div class="ibox-tools">
+                                        <span id="lblTechnicalSumDay" class="label label-info float-right"></span>
+                                    </div>
+                                    <h5>专科招生数</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="d-flex flex-row justify-content-between align-items-center">
+                                        <h1 class="no-margins"><span id="lblTechnicalPeople">0</span>人</h1>
+                                        <a id="btnTechnicalPeople" style="display:none" href="/kdzs/school/recruit/input">
+                                            <svg class="bi bi-pencil" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z" clip-rule="evenodd"/>
+                                                <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div class="stat-percent font-bold text-success"><span id="lblTechnicalPeopleRate">0</span>% <i id="iconTechnicalPeopleRate" class="fa fa-level-up"></i>
+                                    </div>
+                                    <small>昨日数量：<span id="lblTechnicalPeopleYesterday">0</span></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <div class="ibox-tools">
+                                        <span id="lblGkSumDay" class="label label-warning float-right"></span>
+                                    </div>
+                                    <h5>国开招生数</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="d-flex flex-row justify-content-between align-items-center">
+                                        <h1 class="no-margins"><span id="lblGkPeople">0</span>人</h1>
+                                        <a id="btnGkPeople" style="display:none" href="/kdzs/school/recruit/input">
+                                            <svg class="bi bi-pencil" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M11.293 1.293a1 1 0 0 1 1.414 0l2 2a1 1 0 0 1 0 1.414l-9 9a1 1 0 0 1-.39.242l-3 1a1 1 0 0 1-1.266-1.265l1-3a1 1 0 0 1 .242-.391l9-9zM12 2l2 2-9 9-3 1 1-3 9-9z" clip-rule="evenodd"/>
+                                                <path fill-rule="evenodd" d="M12.146 6.354l-2.5-2.5.708-.708 2.5 2.5-.707.708zM3 10v.5a.5.5 0 0 0 .5.5H4v.5a.5.5 0 0 0 .5.5H5v.5a.5.5 0 0 0 .5.5H6v-1.5a.5.5 0 0 0-.5-.5H5v-.5a.5.5 0 0 0-.5-.5H3z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <div class="stat-percent font-bold text-success"><span id="lblGkPeopleRate">0</span>% <i id="iconGkPeopleRate" class="fa fa-level-up"></i>
+                                    </div>
+                                    <small>昨日数量：<span id="lblGkPeopleYesterday">0</span></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>分校招生统计</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="m-t-sm">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div id="chart1" style="min-height: 400px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>分校招生明细</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="row">
+                                        <div class="col-sm-12 m-b-xs">
+                                            <div data-toggle="buttons" class="btn-group btn-group-toggle">
+                                                <label id="btnSumWeek" class="btn btn-sm btn-white active"> <input type="radio"
+                                                        name="optSumType" value="1"> 周 </label>
+                                                <label id="btnSumMonth" class="btn btn-sm btn-white"> <input type="radio"
+                                                        name="optSumType" value="2"> 月 </label>
+                                                <label id="btnSumSeason" class="btn btn-sm btn-white"> <input type="radio"
+                                                        name="optSumType" value="3"> 季 </label>
+                                                <label id="btnSumYear" class="btn btn-sm btn-white"> <input type="radio"
+                                                        name="optSumType" value="4"> 年 </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div id="chart2" style="min-height: 400px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Mainly scripts -->
+    <script src="/kdzs/static/js/jquery-3.1.1.min.js"></script>
+<!--    <script src="/kdzs/static/js/popper.min.js"></script>-->
+    <script src="/kdzs/static/js/bootstrap.min.js"></script>
+<!--    <script src="/kdzs/static/js/plugins/metisMenu/jquery.metisMenu.js"></script>-->
+<!--    <script src="/kdzs/static/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>-->
+
+    <!-- Custom and plugin javascript -->
+<!--    <script src="/kdzs/static/js/inspinia.js"></script>-->
+<!--    <script src="/kdzs/static/js/plugins/pace/pace.min.js"></script>-->
+
+    <script src="/kdzs/static/js/echarts.min.js"></script>
+    <script src="/kdzs/static/js/westeros.js"></script>
+    <script src="/kdzs/static/js/plugins/jqueryxtiper/xtiper.min.js"></script>
+
+    <!-- 业务相关-->
+    <script src="/kdzs/static/js/common/userUtils.js"></script>
+    <script src="/kdzs/static/js/common/requestServer.js"></script>
+    <script src="/kdzs/static/js/common/systemUtils.js"></script>
+    <script src="/kdzs/static/js/common/dateUtils.js"></script>
+    <script>
+        var option1 = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data: ['本科', '专科', '国开']
+            },
+            grid: {
+                left: '0%',
+                right: '3%',
+                bottom: '1%',
+                containLabel: true
+            },
+            xAxis: [{
+                type: 'category',
+                data: []
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            series: [{
+                    name: '本科',
+                    type: 'bar',
+                    data: [],
+                    markLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        },
+                        data: [{
+                            name: '平均线',
+                            // 支持 'average', 'min', 'max'
+                            type: 'average'
+                        }]
+                    }
+                },
+                {
+                    name: '专科',
+                    type: 'bar',
+                    data: [],
+                    markLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        },
+                        data: [{
+                            name: '平均线',
+                            // 支持 'average', 'min', 'max'
+                            type: 'average'
+                        }]
+                    }
+                },
+				{
+                    name: '国开',
+                    type: 'bar',
+                    data: [],
+                    markLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        },
+                        data: [{
+                            name: '平均线',
+                            // 支持 'average', 'min', 'max'
+                            type: 'average'
+                        }]
+                    }
+                }
+            ]
+        };
+
+        var option2 = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data: [],
+                type: 'scroll'
+            },
+            grid: {
+                left: '3%',
+                right: '10',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: [{
+                type: 'category',
+                data: []
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            series: []
+        };
+
+        var chart1 = null;
+        var chart2 = null;
+
+        $(document).ready(function () {
+
+            // 判断是否有填写权限
+            if (userUtils.hasSchoolRecruitAddPermission()) {
+                $("#btnEditUndergraduatePeople").show();
+                $("#btnTechnicalPeople").show();
+                $("#btnGkPeople").show();
+
+            } else {
+                $("#btnEditUndergraduatePeople").hide();
+                $("#btnTechnicalPeople").hide();
+                $("#btnGkPeople").hide();
+            }
+            // 计算招生面板
+            recruitSumDay("", []);
+
+            recruitSum1("", "" ,[]);
+
+            recruitSum2(1, "", "", []);
+
+            $("#btnSumWeek").click(function(){
+                recruitSum2(1, "", "", []);
+            });
+            $("#btnSumMonth").click(function(){
+                recruitSum2(2, "", "", []);
+            });
+            $("#btnSumSeason").click(function(){
+                recruitSum2(3, "", "", []);
+            });
+            $("#btnSumYear").click(function(){
+                recruitSum2(4, "", "", []);
+            });
+        });
+        // 统计招生人数面板
+        function recruitSumDay(date, schoolIds) {
+            let loadid = xtip.load();
+            requestServer.ajax({
+                url:'/kdzs/api/school/recruit/sum/day',
+                type:'GET',
+                data:{searchDate: date, schoolIds: schoolIds},
+                dataType:'json',
+                success:(json) =>{
+                    if (json.c ===0 ) {
+                        // 专科
+                        $("#lblTechnicalPeople").html(json.ctt.technicalPeople);
+                        $("#lblTechnicalPeopleYesterday").html(json.ctt.technicalPeopleYesterday);
+                        $("#lblTechnicalSumDay").html(json.ctt.sumDate);
+                        let technicalPeopleRate = calcRate(json.ctt.technicalPeople, json.ctt.technicalPeopleYesterday);
+                        if (technicalPeopleRate >= 0) {
+                            $("#iconTechnicalPeopleRate").removeClass("fa-level-down");
+                            $("#iconTechnicalPeopleRate").addClass("fa-level-up");
+                        } else {
+                            $("#iconTechnicalPeopleRate").removeClass("fa-level-up");
+                            $("#iconTechnicalPeopleRate").addClass("fa-level-down");
+                        }
+                        $("#lblTechnicalPeopleRate").html(Math.abs(technicalPeopleRate));
+
+                        // 本科
+                        $("#lblUndergraduatePeople").html(json.ctt.undergraduatePeople);
+                        $("#lblUndergraduatePeopleYesterday").html(json.ctt.undergraduatePeopleYesterday);
+                        $("#lblUndergraduateSumDay").html(json.ctt.sumDate);
+                        let undergraduatePeopleRate = calcRate(json.ctt.undergraduatePeople, json.ctt.undergraduatePeopleYesterday);
+                        if (undergraduatePeopleRate >= 0) {
+                            $("#iconUndergraduatePeopleRate").removeClass("fa-level-down");
+                            $("#iconUndergraduatePeopleRate").addClass("fa-level-up");
+                        } else {
+                            $("#iconUndergraduatePeopleRate").removeClass("fa-level-up");
+                            $("#iconUndergraduatePeopleRate").addClass("fa-level-down");
+                        }
+                        $("#lblUndergraduatePeopleRate").html(Math.abs(undergraduatePeopleRate));
+
+                        // 国开
+                        $("#lblGkPeople").html(json.ctt.gkPeople);
+                        $("#lblGkPeopleYesterday").html(json.ctt.gkPeopleYesterday);
+                        $("#lblGkSumDay").html(json.ctt.sumDate);
+                        let gkPeopleRate = calcRate(json.ctt.gkPeople, json.ctt.gkPeopleYesterday);
+                        if (gkPeopleRate >= 0) {
+                            $("#iconGkPeopleRate").removeClass("fa-level-down");
+                            $("#iconGkPeopleRate").addClass("fa-level-up");
+                        } else {
+                            $("#iconGkPeopleRate").removeClass("fa-level-up");
+                            $("#iconGkPeopleRate").addClass("fa-level-down");
+                        }
+                        $("#lblGkPeopleRate").html(Math.abs(gkPeopleRate));
+                    }
+                    xtip.close(loadid);
+                }
+            });
+        }
+
+        // 计算增长率
+        function calcRate(newNum, oldNum) {
+            if (oldNum === 0) {
+                return 0;
+            } else {
+                return (((newNum - oldNum) / oldNum) * 100).toFixed(2);
+            }
+        }
+
+        // 分校招生统计图表1
+        function recruitSum1(searchDateSt, searchDateEd, schoolIds) {
+            let loadid = xtip.load();
+            requestServer.ajax({
+                url:'/kdzs/api/school/recruit/sum/type/0',
+                type:'GET',
+                data:{schoolIds: schoolIds, searchDateSt:searchDateSt , searchDateEd:searchDateEd },
+                dataType:'json',
+                success:(res) =>{
+                    if (res.c ===0 ) {
+                        chart1Redraw(res.ctt.sumSchoolRecruit);
+                    }
+                    xtip.close(loadid);
+                }
+            });
+        }
+        // 分校招生统计图表2
+        function recruitSum2(sumType, searchDateSt, searchDateEd, schoolIds) {
+            let loadid = xtip.load();
+            requestServer.ajax({
+                url:'/kdzs/api/school/recruit/sum/type/' + sumType,
+                type:'GET',
+                data:{schoolIds: schoolIds, searchDateSt:searchDateSt , searchDateEd:searchDateEd },
+                dataType:'json',
+                success:(res) =>{
+                    if (res.c ===0 ) {
+                        let sumSchoolRecruit = null;
+                        if (sumType === 1) {
+                            sumSchoolRecruit = res.ctt.sumSchoolRecruitByWeek;
+                        } else if (sumType === 2) {
+                            sumSchoolRecruit = res.ctt.sumSchoolRecruitByMonth;
+                        } else if (sumType === 3) {
+                            sumSchoolRecruit = res.ctt.sumSchoolRecruitBySeason;
+                        } else if (sumType === 4) {
+                            sumSchoolRecruit = res.ctt.sumSchoolRecruitByYear;
+                        }
+                        chart2Redraw(sumType, sumSchoolRecruit);
+                    }
+                    xtip.close(loadid);
+                }
+            });
+        }
+        // 分校招生统计图表1 重新描画
+        function chart1Redraw(data) {
+            // 本科 招生数据
+            option1.series[0].data = data.map((item) => item.undergraduatePeople);
+            // 专科 招生数据
+            option1.series[1].data = data.map((item) => item.technicalPeople);
+            // 国开 招生数据
+            option1.series[2].data = data.map((item) => item.gkPeople);
+
+            if (systemUtils.isMobile()) {
+                // 分校名 坐标轴名
+                option1.yAxis[0] = {
+                    type:'category',
+                    data: data.map((item) => changeSchoolName2ShortName(item.schoolName)),
+                };
+                option1.xAxis[0] = {type:"value"};
+
+                let minHeight = data.length * 30;
+
+                if (minHeight < 400) minHeight = 400;
+
+                $("#chart1").css("min-height", minHeight);
+            } else {
+                // 分校名 坐标轴名
+                option1.xAxis[0] = {
+                    type:'category',
+                    data: data.map((item) => changeSchoolName2ShortName(item.schoolName)),
+                    axisLabel: {
+                        interval:0,
+                        rotate:-90,
+                    }
+                };
+                option1.yAxis[0] = {type:"value"};
+                $("#chart1").css("min-height", "800px");
+            }
+            chart1 = echarts.init(document.getElementById("chart1"), "westeros");
+            chart1.setOption(option1);
+        }
+        // 分校招生统计图表2 重新描画
+        function chart2Redraw(sumType, data) {
+            if (!data) {
+                return;
+            }
+            // 坐标轴设置
+            let xAxisDataList = [];
+            if (sumType === 1) {
+                xAxisDataList = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+            } else if (sumType === 2) {
+                for (let i = 1; i<= 12; i++ ) {
+                    xAxisDataList.push(i + "月");
+                }
+            } else if (sumType === 3) {
+                xAxisDataList = ['第一季度', '第二季度', '第三季度', '第四季度'];
+            }
+
+            // 统计对象设置
+            let legendDataList = [];
+            data.forEach((item) => {
+                if (legendDataList.indexOf(item.schoolName) < 0) {
+                    legendDataList.push(item.schoolName);
+                }
+                if (sumType === 4) {
+                    if (xAxisDataList.indexOf(item.sumByName) < 0) {
+                        xAxisDataList.push(item.sumByName);
+                    }
+                }
+            });
+
+            // 招生数据
+            let seriesList = [];
+
+            // 循环统计对象
+           legendDataList.forEach((legendData) =>{
+                // 初始化统计对象的值列表
+                let seriesDataList = xAxisDataList.map((item)=> 0);
+
+                let filterData = data.filter((item) => item.schoolName === legendData);
+
+                // 循环后台数据
+                filterData.forEach((item) => {
+                    let sumVal = item.technicalPeople + item.undergraduatePeople + item.gkPeople;
+                    if (sumType === 1) {
+                        let index = dateUtils.changeWeekIndexFromBackend(Number(item.sumByIndex));
+                        seriesDataList[index] = sumVal;
+                    } else if (sumType === 2) {
+                        let index = dateUtils.changeMonthIndexFromBackend(Number(item.sumByIndex));
+                        seriesDataList[index] = sumVal;
+                    } else if (sumType === 3) {
+                        let index = dateUtils.changeSeasonIndexFromBackend(Number(item.sumByIndex));
+                        seriesDataList[index] = sumVal;
+                    } else if (sumType === 4) {
+                        let index = xAxisDataList.indexOf(item.sumByName);
+                        if (index >=0) {
+                            seriesDataList[index] = sumVal;
+                        }
+                    }
+                });
+                seriesList.push({
+                    name: legendData,
+                    type: 'line',
+                    data: seriesDataList,
+                });
+            });
+            option2.legend.data = legendDataList;
+            option2.xAxis[0].data = xAxisDataList;
+            option2.series = seriesList;
+            $("#chart2").css("min-height", "500px");
+            chart2 = echarts.init(document.getElementById("chart2"), "westeros");
+            chart2.setOption(option2);
+        }
+        // 窗口发生变化
+        window.onresize = function () {
+            chart1.resize();
+            chart2.resize();
+        };
+        function changeSchoolName2ShortName(name) {
+            let shortName = name;
+            shortName = shortName.replace("上海市","");
+            shortName = shortName.replace("上海","");
+            shortName = shortName.replace("教学点","");
+            return shortName;
+        }
+    </script>
+
+</body>
+
+</html>
