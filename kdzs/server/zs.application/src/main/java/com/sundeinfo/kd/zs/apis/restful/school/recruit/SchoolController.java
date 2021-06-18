@@ -4,8 +4,10 @@ import com.sundeinfo.foundation.mvc.controller.AbstractController;
 import com.sundeinfo.foundation.request.RequestState;
 import com.sundeinfo.foundation.request.ResponseCallback;
 import com.sundeinfo.foundation.request.result.Result;
+import com.sundeinfo.kd.zs.dao.model.School;
 import com.sundeinfo.kd.zs.define.PermissionCode;
 import com.sundeinfo.kd.zs.dto.apis.school.SchoolDTO;
+import com.sundeinfo.kd.zs.service.school.ImportExcelService;
 import com.sundeinfo.kd.zs.service.school.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +20,19 @@ import java.util.List;
 @RestController
 @RequestMapping("kdzs/api/school/recruit")
 public class SchoolController extends AbstractController<SchoolController> {
+
     @Autowired
     SchoolService schoolService;
-    @PreAuthorize(value = "hasAnyAuthority('" + PermissionCode.SCHOOL_RECRUIT_VIEW+ "','" + PermissionCode.SCHOOL_RECRUIT_VIEW + "')")
+
+    @Autowired
+    ImportExcelService importExcelService;
+
+    //@PreAuthorize(value = "hasAnyAuthority('" + PermissionCode.SCHOOL_RECRUIT_VIEW+ "','" + PermissionCode.SCHOOL_RECRUIT_VIEW + "')")
     @GetMapping(value="/schoolFindAll")
-    public ResponseEntity<Result<List<String>>> getSchoolAll(){
+    public ResponseEntity<Result<List<SchoolDTO>>> getSchoolAll(){
         return requestHandler.doPost(
-                new ResponseCallback<List<String>>(){
-                    List<String> list = null;
+                new ResponseCallback<List<SchoolDTO>>(){
+                    List<SchoolDTO> list = null;
                     @Override
                     public RequestState doCheck()  {
                         return RequestState.SUCCESS;
@@ -36,12 +43,34 @@ public class SchoolController extends AbstractController<SchoolController> {
                         return RequestState.SUCCESS;
                     }
                     @Override
-                    public List<String> response() {
+                    public List<SchoolDTO> response() {
                         return list;
                     }
                 }
         );
     }
+    /**导入Excel招生信息*/
+    @GetMapping(value="/importExcel")
+    public ResponseEntity<Result> importExcel(@RequestParam String recruitDate,@RequestParam Integer shoot){
+        return requestHandler.doPost(
+                new ResponseCallback(){
+                    @Override
+                    public RequestState doCheck()  {
+                        return RequestState.SUCCESS;
+                    }
+                    @Override
+                    public RequestState invoke() throws Exception {
+                        importExcelService.importExcel(recruitDate,shoot);
+                        return RequestState.SUCCESS;
+                    }
+                    @Override
+                    public RequestState response() {
+                        return RequestState.SUCCESS;
+                    }
+                }
+        );
+    }
+
     @GetMapping(value="/schoolFindOne")
     public ResponseEntity<Result<SchoolDTO>> getSchoolOne(){
         return requestHandler.doPost(
@@ -63,6 +92,7 @@ public class SchoolController extends AbstractController<SchoolController> {
                 }
         );
     }
+
     @PreAuthorize(value = "hasAnyAuthority('" + PermissionCode.SCHOOL_RECRUIT_VIEW + "','" + PermissionCode.SCHOOL_RECRUIT_VIEW_ALL + "')")
     @GetMapping(value="/SchoolByNamePlan")
     public ResponseEntity<Result<List<SchoolDTO>>> getSchoolByName(@RequestParam Integer seasonId,@RequestParam String name){
@@ -86,6 +116,10 @@ public class SchoolController extends AbstractController<SchoolController> {
                 }
         );
     }
+
+    /**
+     * 根据学校名查询校正列表中的招生人数
+     * */
     @PreAuthorize(value = "hasAnyAuthority('" + PermissionCode.SCHOOL_RECRUIT_VIEW + "','" + PermissionCode.SCHOOL_RECRUIT_VIEW_ALL + "')")
     @GetMapping(value="/SchoolByNameRevisePeople")
     public ResponseEntity<Result<List<SchoolDTO>>> getSchoolByRevisePeople(@RequestParam Integer seasonId,@RequestParam String name){
@@ -109,4 +143,5 @@ public class SchoolController extends AbstractController<SchoolController> {
                 }
         );
     }
+
 }

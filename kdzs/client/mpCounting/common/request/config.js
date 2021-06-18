@@ -3,11 +3,11 @@ import { mapState } from 'vuex'
 //  http 请求配置项
 export default {
     //	开发者服务器接口地址
-    url: "http://192.168.1.11:8089/kdzs/api",
-	imageUrl: "http://192.168.1.11:8089",
-	//生成接口地址
-	// url: "https://sicp.shou.org.cn/api",
-	// imageUrl: "https://sicp.shou.org.cn",
+	// url: "http://192.168.1.7:8089/kdzs/api",
+	// imageUrl: "http://192.168.1.7:8089",
+	//生产接口地址
+	url: "https://mrtb.sou.edu.cn/kdzs/api",
+	imageUrl: "https://mrtb.sou.edu.cn",
 	
     //	请求的参数	
     data: {},

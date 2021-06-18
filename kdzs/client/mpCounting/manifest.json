@@ -1,5 +1,5 @@
 {
-    "name" : "wisdom",
+    "name" : "每日填报",
     "appid" : "",
     "description" : "登录模板",
     "versionName" : "1.0.0",
@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx48ea5a70fef313bc",
+        "appid" : "wx5457be623c706dff",
         "setting" : {
             "urlCheck" : false
         },

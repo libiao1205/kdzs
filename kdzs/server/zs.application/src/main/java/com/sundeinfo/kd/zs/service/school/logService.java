@@ -12,15 +12,12 @@ import java.util.List;
 
 @Service
 public class logService extends AbstractService<logService> {
-    @Resource
-    SchoolRecruitCountingHistMapper SchoolRecruitCountingHistMapper;
+
     @Resource
     SchoolRecruitCountingHistExtMapper schoolRecruitCountingHistExtMapper;
-    public int saveRecruitStudentLog(SchoolRecruitCountingHist history){
-        return SchoolRecruitCountingHistMapper.insertSelective(history);
-    }
 
     public List<RecruitCountingHistDTO> queryHistory(SchoolRecruitCountingHist history){
         return schoolRecruitCountingHistExtMapper.selectHistory(history);
     }
+
 }

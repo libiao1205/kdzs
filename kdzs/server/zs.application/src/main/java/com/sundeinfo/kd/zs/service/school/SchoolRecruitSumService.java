@@ -16,8 +16,10 @@ import java.util.Date;
 
 @Service
 public class SchoolRecruitSumService extends AbstractService<SchoolRecruitService> {
+
     @Resource
     SchoolRecruitSumMapper schoolRecruitSumMapper;
+
     @Resource
     private SchoolRecruitCountingMapper schoolRecruitCountingMapper;
 
@@ -27,6 +29,7 @@ public class SchoolRecruitSumService extends AbstractService<SchoolRecruitServic
     public SchoolRecruitSum isExist(SchoolRecruitSumKey schoolRecruitSumKey){
         return schoolRecruitSumMapper.selectByPrimaryKey(schoolRecruitSumKey);
     }
+
     @Transactional
     public void saveSchoolRecruitSum(SchoolRecruitCounting record){
         Integer userId = UserHelper.getCurrentUserId();
@@ -93,6 +96,7 @@ public class SchoolRecruitSumService extends AbstractService<SchoolRecruitServic
             return schoolRecruitSumMapper.updateByPrimaryKeySelective(schoolRecruitSumModel);
         }
     }
+
     private void changPeople(SchoolRecruitSum schoolRecruitSumModel){
         Integer userId = UserHelper.getCurrentUserId();
         schoolRecruitSumModel.setCreateby(userId);
@@ -100,4 +104,5 @@ public class SchoolRecruitSumService extends AbstractService<SchoolRecruitServic
         schoolRecruitSumModel.setUpdateby(userId);
         schoolRecruitSumModel.setUpdatetime(new Date());
     }
+
 }

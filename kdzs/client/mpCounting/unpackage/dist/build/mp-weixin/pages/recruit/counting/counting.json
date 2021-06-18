@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "招生信息",
+  "usingComponents": {
+    "uni-icons": "/components/uni-icons/uni-icons",
+    "uni-collapse": "/components/uni-collapse/uni-collapse",
+    "uni-collapse-item": "/components/uni-collapse-item/uni-collapse-item",
+    "uni-calendar": "/components/uni-calendar/uni-calendar",
+    "uni-badge": "/components/uni-badge/uni-badge"
+  }
+}

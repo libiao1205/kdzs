@@ -31,7 +31,7 @@
 					不招生
 				</view>
 				<view class="fx-l-y-v content-font" style="width:80upx">
-					<view class="fx-t-v-h link" @click="open(item.planId,item.name,item.gkPeople,item.technicalPeople,item.undergraduatePeople,item.recruitPlan,item.schoolId)">
+					<view class="fx-t-v-h link" @click="open(item.planId,item.name,item.recruitCount,item.recruitPlan,item.schoolId)">
 						修改
 					</view>
 				</view>	
@@ -57,13 +57,13 @@
 					</view>
 					<view class="fx-l-y-v mr-t-s">
 						<view class=" mr-r-xs fx-t-v-h content-font">
-							国开本科:
+							招生人数:
 						</view>
 						<view class=" fx-t-v-h">
-							<input class="uni-input input-border mr-r-xs input-width" :disabled="flag" v-model="gkPeople" type="number"  />
+							<input class="uni-input input-border mr-r-xs input-width" v-model="sumPeople" type="number"  />
 						</view>
 					</view>
-					<view class="fx-l-y-v mr-t-s">
+					<!-- <view class="fx-l-y-v mr-t-s">
 						<view class=" mr-r-xs fx-t-v-h content-font">
 							上开本科:
 						</view>
@@ -78,7 +78,7 @@
 						<view class=" fx-t-v-h">
 							<input class="uni-input input-border mr-r-xs input-width" :disabled="flag" v-model="undergraduatePeople" type="number"  />
 						</view>
-					</view>
+					</view> -->
 					
 					<view class="w-100 fx-l-y-v-bt mr-t-s" >
 						<button type="primary" class="w-90" @click="submitUpdate" style="height:60upx;line-height: 52upx;">提交</button>
@@ -120,6 +120,7 @@
 				recruitPlan : true,
 				schoolId:0,
 				flag : false,
+				sumPeople:0,
 			}
 		},
 		onLoad(option){
@@ -132,6 +133,7 @@
 				querySeasonoOne : 'page/querySeasonoOne',
 				findSchoolByNamePlan : 'page/findSchoolByNamePlan',
 				updateRecruitPlan : 'page/updateRecruitPlan',
+				loadSchoolAll: 'page/loadSchoolAll',
 			}),
 			getSeason(option){
 				let data = {id:this.seasonId};
@@ -141,18 +143,17 @@
 					this.recruitYear = this.currSeason.recruityear;
 				});
 			},
-			open(id,name,gkPeople,technicalPeople,undergraduatePeople,recruitPlan,schoolId){
+			open(id,name,sumPeople,recruitPlan,schoolId){
 				if(recruitPlan === 0){
 					this.flag = true;
+					this.oldRecruitPlan = false ;
 				}else{
-					this.gkPeople = gkPeople;
-					this.technicalPeople = technicalPeople;
-					this.undergraduatePeople = undergraduatePeople;
+					this.oldRecruitPlan = true;
 				}
+				this.sumPeople = sumPeople;
 				this.planId = id;
 				this.schoolName = name;
 				
-				this.oldRecruitPlan = recruitPlan;
 				this.recruitPlan = recruitPlan;
 				this.schoolId = schoolId;
 				this.$refs.popup.open();
@@ -172,23 +173,22 @@
 			radioChange(e){
 				if(e.target.value === "false"){
 					this.flag = true;
+					this.oldRecruitPlan = false;
 				}else{
+					this.oldRecruitPlan = true;
 					this.flag = false;
 				}
 				this.recruitPlan = e.target.value;
 			},
 			submitUpdate(){
-				if((!this.gkPeople|| !this.technicalPeople || !this.undergraduatePeople) && this.recruitPlan === 1){
+				if((!this.sumPeople) && this.recruitPlan === 1){
 					uni.showModal({
 						content: '请填写招生人数',
 						showCancel: false,
 					});
 					return ;
 				}
-				let data = {id:this.planId,recruitcount:(parseInt(this.gkPeople)+parseInt(this.technicalPeople)+parseInt(this.undergraduatePeople)),
-							gkpeople:this.gkPeople,
-							technicalpeople:this.technicalPeople,
-							undergraduatepeople:this.undergraduatePeople,
+				let data = {id:this.planId,recruitcount:parseInt(this.sumPeople),
 							recruitplan:this.recruitPlan,schoolid:this.schoolId,
 							seasonid:this.seasonId
 							};
@@ -196,6 +196,7 @@
 					this.schoolList = [];
 					this.getSchoolPlan("");
 					this.close();
+					
 				});
 			}
 		}

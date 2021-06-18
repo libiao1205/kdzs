@@ -21,7 +21,8 @@
 			</view>	
 		</view>
 		<view class="h-90 fx-t-v">
-			<view class="fx-l-y-v" style="height:80upx" v-for="(item,index) in seasonList" :key="index">
+																										<!-- 2020年秋季以前的数据为导入数据，无法做统计报表 -->
+			<view class="fx-l-y-v" style="height:80upx" v-for="(item,index) in seasonList" :key="index" v-if="formatDateInfo(item.recruitstartdate) >= '2020-07-01'" >
 				<view class="cell-mr-r-20 fx-t-v-h content-font  cell-width">
 					{{getCurrSeason(item.recruitseason)}}
 				</view>

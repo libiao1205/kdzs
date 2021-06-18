@@ -19,6 +19,7 @@ import java.util.List;
 
 @Service
 public class SeasonService extends AbstractService<SeasonService> {
+
     @Resource
     SchoolRecruitSeasonExtMapper schoolRecruitSeasonExtMapper;
 
@@ -39,6 +40,7 @@ public class SeasonService extends AbstractService<SeasonService> {
         }
         return currSeasonDTO;
     }
+
     private String subRecruitYear(CurrSeasonDTO currSeasonDTO){
         SimpleDateFormat simpleDateFormatFormat = new SimpleDateFormat("yyyy");
         Calendar cal = Calendar.getInstance();
@@ -51,9 +53,11 @@ public class SeasonService extends AbstractService<SeasonService> {
         }
         return simpleDateFormatFormat.format(cal.getTime());
     }
+
     public Long seasonIsExist(RecruitSeasonDTO schoolRecruitSeason){
         return schoolRecruitSeasonExtMapper.seasonIsExist(schoolRecruitSeason);
     }
+
     @Transactional
     public int saveSeason(RecruitSeasonDTO recruitSeason){
         int onRecruitYear = Integer.valueOf(recruitSeason.getRecruitYear()) - 1;
@@ -91,13 +95,16 @@ public class SeasonService extends AbstractService<SeasonService> {
             return 0;
         }
     }
+
     public int updateSeason(RecruitSeasonDTO recruitSeason){
         this.changePeople(recruitSeason);
         return schoolRecruitSeasonExtMapper.updateByPrimaryKey(recruitSeason);
     }
+
     public SchoolRecruitSeason selectById(Integer id){
         return schoolRecruitSeasonMapper.selectByPrimaryKey(id);
     }
+
     public int updateState(){
         List<Integer> list = schoolRecruitSeasonExtMapper.selectByStatus();
         StringBuffer idStr = new StringBuffer();
@@ -110,10 +117,12 @@ public class SeasonService extends AbstractService<SeasonService> {
             return schoolRecruitSeasonExtMapper.updateByStatus(idStr.substring(0,idStr.lastIndexOf(",")));
         }
     }
+
     public List<SchoolRecruitSeason> findAllSeason(){
         SchoolRecruitSeasonExample example= new SchoolRecruitSeasonExample();
         return schoolRecruitSeasonMapper.selectByExample(example);
     }
+
     private void changePeople(RecruitSeasonDTO schoolRecruitSeason){
         Integer userId = UserHelper.getCurrentUserId();
         Date currDate = new Date();
@@ -127,4 +136,5 @@ public class SeasonService extends AbstractService<SeasonService> {
         schoolRecruitSeason.setUpdateBy(userId);
         schoolRecruitSeason.setUpdateTime(currDate);
     }
+
 }

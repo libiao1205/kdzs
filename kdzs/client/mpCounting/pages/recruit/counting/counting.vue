@@ -1,5 +1,15 @@
 <template>
 	<view class="fx-t-v w-100">
+		<view v-if="roles[0].roleCode === sumSchoolRoleCode" class="fx-l-y-v mr-b-10">
+			<view style="margin-right: 115upx;">请选择院校</view>
+			<picker @change="bindPickerChange" :value="index" :range="arrayInfo">
+				<view class="uni-input home-paicker fx-l-v-bt color-title2" >
+					<view>{{arrayInfo[index]}}</view>
+					<uni-icons type="arrowdown"/>
+				</view>
+				
+			</picker>
+		</view>
 		<uni-collapse class="coll-width" @change="exchange">
 			<uni-collapse-item title="填写招生人数" showAnimation="true" open="true" class="coll-width">
 				<view class="bg-w">
@@ -171,11 +181,16 @@
 	export default{
 		components: {uniBadge,uniCollapse,uniCollapseItem,uniCalendar},
 		computed:{
+			...mapState({
+				sumSchoolRoleCode: state => state.constant.sumSchoolRoleCode
+			}),
 			...mapGetters({
 				formatDateAll: 'constant/formatDateAll',
 				formatDateShort: 'constant/formatDateShort',
 				getCurrDate: 'constant/getCurrDate',
 				checkNumber: 'constant/checkNumber',
+				getSchoolOne: 'constant/getSchoolOne',
+				selectSchoolId: 'constant/selectSchoolId',
 			}),
 		},
 		data(){
@@ -188,25 +203,36 @@
 				recruitStudentList : [],
 				recruitStudentLogList : [],
 				currSeason : [],
+				schoolId:2,
+				arrayInfo: ['公共管理学院','经济管理学院','人文学院','理工学院'],
+				index:0,
+				roles:{}
 			}
 		},
 		onLoad(){
+			this.roles = uni.getStorageSync('roles');
 			this.recruitdateAdd = this.getCurrDate();
 			this.recruitDateSearch = this.getCurrDate();
 			this.currSeason = uni.getStorageSync('currSeason');
+			this.loadSchoolOne().then((res) =>{
+				if(res){
+					this.schoolId = res.schoolId;
+				}
+			});
 		},
 		methods:{
 			...mapActions({
 				saveStudent: 'page/saveStudent',
 				loadRecruitStudentList : 'page/loadRecruitStudentList',
 				loadRecruitStudentLogList : 'page/loadRecruitStudentLogList',
+				loadSchoolOne: 'page/loadSchoolOne',
 			}),
 			savePeople(){
 				if(!this.checkrecruitCount()){
 					return;
 				}
 				let data = {seasonid : this.currSeason.seasonId,
-							schoolid : uni.getStorageSync('schoolOne').schoolId,
+							schoolid : this.schoolId,
 							undergraduatepeople :this.undergraduatepeople,
 							technicalpeople : this.technicalpeople,
 							gkpeople : this.gkpeople,
@@ -254,7 +280,7 @@
 				}
 			},
 			findRecruitStudent(value){
-				let data = {schoolId : uni.getStorageSync('schoolOne').schoolId,
+				let data = {schoolId : this.schoolId,
 							seasonId : this.currSeason.seasonId,
 							type : value};
 				this.loadRecruitStudentList(data).then((res) =>{
@@ -263,12 +289,16 @@
 			},
 			findRecruitStudentLog(){
 				let data = {seasonid : this.currSeason.seasonId,
-							schoolid : uni.getStorageSync('schoolOne').schoolId,
+							schoolid : this.schoolId,
 							recruitdate : this.recruitDateSearch};
 				 this.loadRecruitStudentLogList(data).then((res) => {
 					this.recruitStudentLogList = res;
 				});
 			},
+			bindPickerChange: function(e) {
+				this.index = e.target.value;
+				this.schoolId = this.selectSchoolId(this.index);
+			}
 		}
 	}
 </script>

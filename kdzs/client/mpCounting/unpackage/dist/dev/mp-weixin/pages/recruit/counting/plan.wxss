@@ -1,0 +1,10 @@
+
+.cell-width{
+	width:150rpx;
+}
+.up-box{
+	background-color:#FFFFFF;
+	width:650rpx;
+	height:700rpx;
+}
+

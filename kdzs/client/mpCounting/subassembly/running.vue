@@ -1,24 +1,65 @@
 <template>
-	<view class="w-100 posA" :style="'top:'+mrTop+'%'">
-		<view class="bike bikeAni running-height" v-if="flag" :style="'left: calc('+rate+'% - '+(rate*0.6)+'px);background-image: url('+imageUrl+'/images/file?path=file/bike.png)'"></view>
-		<view class="bike running-height" v-if="!flag" :style="'left: calc('+rate+'% - '+(rate*0.6)+'px);background-image: url('+imageUrl+'/images/file?path=file/bike1.png)'"></view>
+	<view style="z-index: 100;">
+		<view style="position: absolute;
+					width:100%;
+					height:auto;
+					bottom:0;
+					">		
+			<view style="width: 100%;" class="fx-r">
+				<view style="width: 60%;" class="fx-t">
+					<view style="position:relative;
+							width:100%;
+							height:auto;margin-bottom: -5px;">
+						<image :src="imageUrl+'/images/file?path=file/bg3-2.png'" id="bgImg" style="width:100%;" mode ="widthFix"/>
+					</view>
+					<view style="position:relative;
+							width:100%;
+							height:auto;margin-bottom: -5px;">
+							<view v-if="flag_show" style="width:100%;height: auto;position: absolute;top:0px;">
+								<image :src="imageUrl+'/images/file?path=file/streamer.png'" id="streamer" style="width:100%;position: absolute;top:0" mode ="widthFix"/>
+							</view>
+						<image :src="imageUrl+'/images/file?path=file/bg3-1.png'" id="bgImg" style="width:100%;" mode ="widthFix"/>
+					</view>
+				</view>
+			</view>
+			<image :src="imageUrl+'/images/file?path=file/bg4.png'" id="bgImg" style="width:100%;margin-bottom: -3px;" mode ="widthFix"/>			
+		</view>
+		
+		<view class="running_box" :style="'left:'+leftNum+'%;bottom:'+bottomNum+'%;'">
+			<image :src="imageUrl+'/images/file?path=file/vehicle.gif'" class="running-img" ></image>		
+		</view>
+		
+		<view class="fx-l-y-v fx-b-v progress">
+			<view class="title-msg">
+				{{recruitPeople}}/{{planPeople}}
+			</view>
+			<view class="progress_bar" :style="'height:'+progressNum+'%;'">
+			</view>
+		</view>
+	</view>
+	<!-- <view class="w-100 posA" :style="'top:'+mrTop+'%'">
+		<view class="posA" :class="{'slide':aniStart}" :style="'left: calc('+rate+'% - '+(rate*1.2)+'px);'">
+			<view class="bike bikeAni running-height" v-if="flag" :style="'background-image: url('+imageUrl+'/images/file?path=file/bike.png)'"></view>
+		</view>
+		<view class="bike running-height" v-if="!flag" :style="'background-image: url('+imageUrl+'/images/file?path=file/bike1.png)'"></view>
 		<view class="progress running-height ">
-			<view class="progress-bar-l fx-t-v-h" :style="'width: calc('+rate+'% - '+(rate*0.6)+'px);background-color: '+progressBarColor">
+			<view class="progress-bar-l fx-t-v-h" :class="{'slide':aniStart}" :style="'width: calc('+rate+'% - '+(rate*1.2)+'px);background-color: '+progressBarColor">
 				<view v-if="rate >= 50">
 					{{recruitPeople}}{{flag ? '/' : ''}}{{planPeople}}
 				</view>
 			</view>
-			<view v-if="planPeople > 0 " class="progress-bar-r fx-t-v-h" :style="'width: calc('+(100 - rate)+'% - '+(60-rate*0.6)+'px);background-color: '+progressBarColor">
+			<view class="progress-bar-r fx-t-v-h" :class="{'slide':aniStart}" :style="'width: calc('+(100 - rate)+'% - '+(120-rate*1.2)+'px);background-color: '+progressBarColor">
 				<view v-if="rate < 50">
 					{{recruitPeople}}{{flag ? '/' : ''}}{{planPeople}}
 				</view>
 			</view>
 		</view>
-	</view>
+	</view> -->
 </template>
 
 <script>
 	import _config from '../common/request/config.js'
+	import AnimationItems from '../utils/AnimationItems.js'
 	export default {
 		props:{
 			rate:{
@@ -49,57 +90,85 @@
 		data(){
 			return {
 				imageUrl : _config.imageUrl,
+				leftNum: 16,
+				bottomNum: 0,
+				progressNum: 0,
+				flag_show: false,
+				
 			}
-		}
+		},
+		methods:{
+			start(){	
+				//计算图片高度
+				// if(this.streamerTop == 0){
+				// 	const query = uni.createSelectorQuery().in(this);
+				// 	query.select('#streamer').boundingClientRect(data => {
+				// 	this.streamerTop = data.height;
+					
+				// 	}).exec();
+				// }
+				this.Interval = setInterval(()=>{
+					if((this.rate * 0.21) <= this.bottomNum){
+						clearInterval(this.Interval);
+						if(this.progressNum < this.rate){
+							this.progressNum = this.rate;
+						}
+						if(this.rate == 100){
+							this.flag_show = true;
+						}
+					}
+					this.leftNum = this.leftNum + 0.24;
+					this.bottomNum = this.bottomNum + 0.2;
+					if(this.progressNum <= this.rate){
+						this.progressNum+= 1;
+					}
+				},100);
+			},
+			stop(){
+				clearInterval(this.Interval);
+			}
+		},
+		watch: {
+			//正确给 cData 赋值的 方法
+			rate: function(newVal,oldVal){
+				this.rate = newVal;  
+				this.rate ? this.start() : ''; 
+			}
+		},
 	}
 </script>
 
 <style>
-	.bike {
-        width: 60px;
-		background-size: cover;
-		-webkit-background-size: cover;
-		-o-background-size: cover;
-        position: absolute;
-    }
-    /*steps属性是把动画拆分N次显示-*/
-    .bikeAni {
-        -webkit-animation:bikeAni 5s steps(99) infinite;
-        animation:bikeAni 5s steps(99) infinite;
-		
-    }
-    @keyframes bikeAni{
-        0%{background-position:0 5940px;}
-        99%{background-position:0 0;}
-    }	
-	.redFlag{
-		width:15%;
-		height:100%;
+	.running_box{
+		height:300upx;
 		position: absolute;
-		right:0;
-		bottom: 0;
-		z-index: 100;
+		left:0;
+	}
+	.title-msg{
+		color:#FFFFFF;
+		font-weight: 600;
+		width: 18upx;
+		word-wrap: break-word; 
+		word-break: normal;
+		z-index:100;
+	}
+	.running-img{
+		width:300upx;
+		height:300upx;
 	}
 	.progress{
+		position: absolute;
+		left: 10upx;
+		top: 8%;
+		width:26upx;
+		height: 650upx;
+		border-radius:26upx;
+		background-color: #ccced4;
+	}
+	.progress .progress_bar{
+		position: absolute;
+		border-radius:26upx;
 		width:100%;
-		position: absolute;
-		left: 0%;
-	}
-	.progress-bar-l{
-		height:40%;
-		color:#FFFFFF;
-		position: absolute;
-		bottom: 0%;
-		left: 0%;
-	}
-	.progress-bar-r{
-		height:40%;
-		color:#FFFFFF;
-		position: absolute;
-		bottom: 0%;
-		right: 0%;
-	}
-	.running-height{
-		height:60px;
+		background-color: rgb(255, 73, 73);
 	}
 </style>

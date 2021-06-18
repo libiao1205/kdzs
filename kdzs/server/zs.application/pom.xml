@@ -10,9 +10,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>zs.application</artifactId>
+    <packaging>jar</packaging>
 
 
     <dependencies>
+
+
+
         <!-- https://mvnrepository.com/artifact/com.itextpdf/itext-asian -->
         <dependency>
             <groupId>com.itextpdf</groupId>

@@ -6,10 +6,12 @@ import com.sundeinfo.core.permission.strategy.token.AuthenticationResponse;
 import com.sundeinfo.core.permission.utility.AuthorityCreater;
 import com.sundeinfo.core.permission.utility.TokenResource;
 import com.sundeinfo.foundation.mvc.controller.AbstractController;
+import com.sundeinfo.foundation.request.PostCallback;
 import com.sundeinfo.foundation.request.RequestState;
 import com.sundeinfo.foundation.request.ResponseCallback;
 import com.sundeinfo.foundation.request.result.Result;
 import com.sundeinfo.kd.zs.dto.auth.LoginDTO;
+import com.sundeinfo.kd.zs.dto.auth.updatePasswordDTO;
 import com.sundeinfo.kd.zs.service.auth.UserAuthService;
 import com.sundeinfo.kd.zs.utility.UserHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,4 +66,64 @@ public class AuthRestController extends AbstractController<AuthRestController> {
         );
     }
 
+    @PostMapping(value = "/updatePassword")
+    public ResponseEntity<Result> updatePassword(@RequestBody updatePasswordDTO updatePasswordDTO) throws AuthenticationException {
+        return requestHandler.doPost(
+                new PostCallback() {
+                    String token = "";
+                    String phone = UserHelper.getCurrentUserPhone();
+                    @Override
+                    public RequestState doCheck() {
+                        if (!StringUtils.hasText(phone) || !StringUtils.hasText(updatePasswordDTO.getOldPassword()) || !StringUtils.hasText(updatePasswordDTO.getNewPassword()) || !StringUtils.hasText(updatePasswordDTO.getRePassword())){
+                            return RequestState.PARAM_NULL;
+                        }
+                        return RequestState.SUCCESS;
+                    }
+                    @Override
+                    public RequestState invoke() throws Exception {
+                        try{
+                            token = userAuthService.login(phone,updatePasswordDTO.getOldPassword());
+                            if(StringUtils.hasText(token)){
+                                if(updatePasswordDTO.getOldPassword().equals(updatePasswordDTO.getNewPassword())){
+                                    return RequestState.PARAM_PASSWORD_NEW_ERROR;
+                                }
+                                if(!updatePasswordDTO.getNewPassword().equals(updatePasswordDTO.getRePassword())){
+                                    return RequestState.PARAM_PASSWORD_RE_ERROR;
+                                }
+                                Integer userId = UserHelper.getCurrentUserId();
+                                userAuthService.updateUser(updatePasswordDTO.getRePassword(),userId);
+                                return RequestState.SUCCESS;
+                            }
+                            else{
+                                return RequestState.PARAM_PASSWORD_ERROR;
+                            }
+                        }catch(Exception e){
+                            return RequestState.PARAM_PASSWORD_ERROR;
+                        }
+                    }
+                }
+        );
+    }
+
+    @PostMapping(value = "/resetPassword")
+    public ResponseEntity<Result> resetPassword(@RequestBody updatePasswordDTO updatePasswordDTO) throws AuthenticationException {
+        return requestHandler.doPost(
+                new PostCallback() {
+                    String token = "";
+                    String phone = UserHelper.getCurrentUserPhone();
+                    @Override
+                    public RequestState doCheck() {
+                        if (!StringUtils.hasText(updatePasswordDTO.getRePassword())){
+                            return RequestState.PARAM_NULL;
+                        }
+                        return RequestState.SUCCESS;
+                    }
+                    @Override
+                    public RequestState invoke() throws Exception {
+                        userAuthService.updateUser(updatePasswordDTO.getRePassword(),updatePasswordDTO.getUserId());
+                        return RequestState.SUCCESS;
+                    }
+                }
+        );
+    }
 }

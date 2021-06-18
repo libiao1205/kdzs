@@ -13,20 +13,24 @@
     </resultMap>
     <resultMap id="StatisticPlanMap" type="com.sundeinfo.kd.zs.dto.apis.school.SchoolRecruitPlanDTO">
         <constructor>
-            <arg column="gkpeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
-            <arg column="technicalpeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="recruitcount" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="undergraduatepeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="technicalpeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="gkpeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
         </constructor>
     </resultMap>
 
     <select id="findAllPlanRecruitPlan"  resultMap="StatisticPlanMap">
-        select sum(plan.recruitCount)recruitCount,sum(plan.undergraduatePeople) undergraduatepeople,sum(plan.technicalPeople) technicalpeople,sum(plan.gkPeople) gkpeople from b_school_recruit_plan plan
-        where 1 = 1
+        select sum(plan.recruitCount)recruitcount,sum(plan.undergraduatePeople) undergraduatepeople,sum(plan.technicalPeople) technicalpeople,sum(plan.gkPeople) gkpeople from b_school_recruit_plan plan
+        where plan.recruitPlan = 1
         <if test="seasonId != null and seasonId != 0">
             and plan.seasonId = #{seasonId,jdbcType=INTEGER}
         </if>
         <if test="schoolId != null and schoolId != 0">
             and plan.schoolId = #{schoolId,jdbcType=INTEGER}
+        </if>
+        <if test="schoolIds != null and schoolIds != ''">
+            and plan.schoolId in ${schoolIds}
         </if>
     </select>
     <update id="updateByPrimaryKeySelectiveExt" parameterType="com.sundeinfo.kd.zs.dao.model.SchoolRecruitPlan">

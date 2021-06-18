@@ -48,6 +48,11 @@
 				"navigationBarTitleText": ""
 			}
 		}, {
+			"path": "pages/user/userAdmin",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		}, {
 			"path": "pages/user/login",
 			"style": {
 				"navigationBarTitleText": ""

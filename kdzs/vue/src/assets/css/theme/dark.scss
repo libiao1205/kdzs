@@ -1,0 +1,24 @@
+$themeColor: #465873;
+$baseImageURL: '~sysStatic/images/dark/';
+
+/* 基础颜色
+-------------------------- */
+$lighterGray: #eee;
+$lightGray: #ccc;
+
+$themeColorLighter: lighten($themeColor, 5%);
+$themeColorDarken: darken($themeColor, 8%);
+
+
+/* 组件设置
+-------------------------- */
+/* login */
+//$loginBg: url($baseImageURL+"login.jpg") center center no-repeat;
+$loginBtn: #424f60;
+$loginTextColor: $lightGray;
+$loginInputBorderColor: rgba(255,255,255,.1);
+$loginInputBg: $themeColor;
+$loginInputErrBg: inherit;
+$loginInputColor: $loginTextColor;
+$loginLangCurBg: #ff6363;
+$loginLangCurColor: $themeColor;

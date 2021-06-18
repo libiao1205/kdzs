@@ -168,25 +168,7 @@ const actions = {
 			});
 		})
 	},
-	exportExcel({state,commit},data) {
-		return new Promise((resolve) => {
-			this.$axios({
-				url: '/school/recruit/getExcel',
-				method: 'GET',
-				//data:data,
-			}).then((res) => {
-			    if (res.c === 0) {
-					resolve(res.ctt);
-			    } else {
-					uni.showModal({
-						content: res.msg,
-						showCancel: false,
-					});
-					resolve(false);
-			   }
-			});
-		})
-	},
+	
 	loadPermissionCode({state,commit}) {
 		return new Promise((resolve) => {
 			this.$axios({

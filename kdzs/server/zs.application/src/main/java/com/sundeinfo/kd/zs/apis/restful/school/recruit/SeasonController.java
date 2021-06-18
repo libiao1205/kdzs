@@ -23,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("kdzs/api/school/recruit")
 public class SeasonController extends AbstractController<SeasonController> {
+
     @Autowired
     SeasonService seasonService;
 
@@ -46,6 +47,7 @@ public class SeasonController extends AbstractController<SeasonController> {
                     }
                 });
     }
+
     @PostMapping(value = "/saveSeason")
     public ResponseEntity<Result> saveSeason(@RequestBody RecruitSeasonDTO schoolRecruitSeason) throws AuthenticationException {
         return requestHandler.doPost(
@@ -79,6 +81,7 @@ public class SeasonController extends AbstractController<SeasonController> {
                 }
         );
     }
+
     @PostMapping(value = "/updateSeason")
     public ResponseEntity<Result> updateSeason(@RequestBody RecruitSeasonDTO schoolRecruitSeason) throws AuthenticationException {
         return requestHandler.doPost(
@@ -111,6 +114,10 @@ public class SeasonController extends AbstractController<SeasonController> {
                 }
         );
     }
+
+    /**
+     * 修改已结束的招生季状态
+     * */
     @GetMapping(value = "/whetherOvertime")
     public ResponseEntity<Result> whetherOvertime(){
         return requestHandler.doGet(new GetCallback() {
@@ -125,6 +132,7 @@ public class SeasonController extends AbstractController<SeasonController> {
             }
         });
     }
+
     @GetMapping(value = "/querySeason")
     public ResponseEntity<Result<List<SchoolRecruitSeason>>> querySeason(){
         return requestHandler.doGet(new GetCallback<List<SchoolRecruitSeason>>() {
@@ -138,6 +146,7 @@ public class SeasonController extends AbstractController<SeasonController> {
             }
         });
     }
+
     @GetMapping(value = "/querySeasonOne")
     public ResponseEntity<Result<SchoolRecruitSeason>> querySeasonOne(@RequestParam Integer id){
         return requestHandler.doGet(new GetCallback<SchoolRecruitSeason>() {
@@ -151,7 +160,5 @@ public class SeasonController extends AbstractController<SeasonController> {
             }
         });
     }
-
-
 
 }

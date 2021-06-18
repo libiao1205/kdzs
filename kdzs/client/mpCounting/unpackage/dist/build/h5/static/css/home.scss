@@ -1,0 +1,99 @@
+
+//外填充
+.mr-t-m{
+	margin-top: 0%;
+}
+.mr-t-four{
+	margin-top: 40upx;
+}
+.mr-t-min{
+	margin-top: 5upx;
+}
+.mr-b-min{
+	margin-bottom: 5upx;
+}
+.mr-l-min{
+	margin-left: 10upx;
+}
+
+/**
+ * 图标
+ */
+
+// logo
+
+.home-logo-title-img {
+	width: 90%;
+	height: 90upx;
+}
+.input-border{
+		border:1upx solid #C1C4C5;
+	}
+//样式
+
+//cursor
+.finger {
+    cursor: pointer;
+}
+.hr-solid{
+	width: 90%;
+	border:4upx solid rgba(9, 149, 71, 0.8);
+}
+.hr-solid-gray{
+	width: 90%;
+	border:0.5upx solid rgba(207, 206, 195, 204);
+}
+.hr-dashed{
+	width: 100%;
+	border:0.5upx solid #d3d3d3;
+}
+.home-content{
+	border:0upx solid black;
+	width:90%;
+	height:900upx;
+}
+.font{
+	font-family: MicrosoftYaHei;
+}
+.font-size-14{
+	font-size: 14upx;
+}
+.font-weight{
+	font-weight: 600;
+}
+.home-paicker{
+	border:1upx solid rgba(204, 203, 202, 204);
+	width:400upx;
+	height: 50upx;
+	color: rgba(204, 203, 202, 204);
+}
+.border{
+	border:1upx solid black;
+}
+.home-input{
+	border:0upx solid rgba(204, 203, 202, 204);
+	width:200upx;
+	height: 50upx;
+}
+
+.home-content-font{
+	font-size: 25upx;
+	color:#868699;
+}
+.color-title1{
+	color:#e86c00;
+}
+.color-title2{
+	color:#868699;
+}
+.color-rate1{
+	color:#ffaa00;
+}
+.color-rate2{
+	color:#4a94de;
+}
+	
+//缩进
+.retract{
+	padding-left: 55upx;
+}

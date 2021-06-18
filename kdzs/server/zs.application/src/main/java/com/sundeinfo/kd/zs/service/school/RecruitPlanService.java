@@ -23,6 +23,7 @@ public class RecruitPlanService extends AbstractService<RecruitPlanService> {
 
     @Autowired
     SeasonService seasonService;
+
     /*修改本年度某个季节招生计划另一个季节的也要同步（招生计划一年只能有一个）*/
     @Transactional
     public int updateRecruitPlan(SchoolRecruitPlan schoolRecruitPlan){
@@ -50,4 +51,5 @@ public class RecruitPlanService extends AbstractService<RecruitPlanService> {
             return 0;
         }
     }
+
 }

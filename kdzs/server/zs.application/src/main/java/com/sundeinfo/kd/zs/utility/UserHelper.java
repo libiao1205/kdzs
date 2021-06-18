@@ -20,6 +20,11 @@ public class UserHelper {
         return ((UserDTO)((AnyUser)authentication.getPrincipal()).getUser()).getId();
     }
 
+    public static String getCurrentUserPhone(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ((UserDTO)((AnyUser)authentication.getPrincipal()).getUser()).getLoginName();
+    }
+
     public static List<Integer> getCurrentUserOrgs(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return ((AnyUser)authentication.getPrincipal()).getOrganizations().stream().map(Entity::getId).collect(Collectors.toList());

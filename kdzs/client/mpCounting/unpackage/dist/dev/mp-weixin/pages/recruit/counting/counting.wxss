@@ -1,0 +1,36 @@
+
+.coll-width{
+	width:750rpx;
+	background-color:#FFFFFF;
+}
+.title-right{
+	position: relative;
+	right: 50rpx;
+}
+.cell-mr-r-20{
+	margin-right: 20rpx;
+}
+.cell-mr-r-100{
+	margin-right: 150rpx;
+}
+.cell-mr-r-40{
+	margin-right: 40rpx;
+}
+.cell-mr-r-50{
+	margin-right: 60rpx;
+}
+.box2-cell{
+	width:80rpx;
+}
+.box2-cell-4{
+	width:110rpx;
+}
+.box2-cell-5{
+	width:240rpx;
+}
+.box-3-time{
+	position: relative;
+	top:0rpx;
+	left:0rpx;
+}
+

@@ -1,8 +1,9 @@
 package com.sundeinfo.kd.zs.utility;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -13,7 +14,7 @@ import java.security.Key;
 import java.security.Security;
 
 public class WxAESUtils {
-    private static Logger logger = Logger.getLogger(WxAESUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(WxAESUtils.class);
 
     private static boolean initialized = false;
 
@@ -43,7 +44,7 @@ public class WxAESUtils {
             init();
             json = new String(decrypt(encrypted64, key64, generateIV(iv64)));
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("",e);
         }
         return json;
     }

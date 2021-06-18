@@ -1,23 +1,23 @@
 package com.sundeinfo.kd.zs.apis;
 
 import com.sundeinfo.foundation.mvc.controller.AbstractController;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLEncoder;
 
 
 @CrossOrigin
 @RestController
 @RequestMapping("images")
 public class FileController extends AbstractController<FileController> {
-
-    String url = "E:/images";
+    @Value("${imgFile.url}")
+    String url;
 
     @GetMapping(value = "file")
-    public void getFile(HttpServletResponse response, @RequestParam String path) throws IOException {
+    public void getFile(HttpServletResponse response,HttpServletRequest request, @RequestParam String path) throws IOException {
         if (path.equals("null")) return;
         response.setCharacterEncoding("UTF-8");
 
@@ -25,11 +25,15 @@ public class FileController extends AbstractController<FileController> {
         int suffixIndex = strArray.length -1;
         if (strArray[suffixIndex].toLowerCase().equals("png")) {
             response.addHeader("Content-type", "image/png");
+        } if(strArray[suffixIndex].toLowerCase().equals("gif")){
+            response.addHeader("Content-type", "image/gif;charset=UTF-8");
         } else {
             response.addHeader("Content-type", "image/jpeg;charset=UTF-8");
         }
         response.addHeader("cache-control", "max-age=2628000");
-        String filePath = url+ "/" + path;
+        logger.info("********************************服务器地址"+url+"********************************");
+        String filePath = url +"/"+ path;
+        logger.info("********************************服务器图片地址"+filePath+"********************************");
         File file = new File(filePath);
         InputStream inputStream = new FileInputStream(file);
         int len = 0;

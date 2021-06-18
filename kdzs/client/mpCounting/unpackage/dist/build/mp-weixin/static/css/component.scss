@@ -1,0 +1,98 @@
+// input
+m-input {
+	width: 100%;
+	min-height: 100%;
+	display: flex;
+}
+.input-group {
+	background-color: #ffffff;
+	margin-top: 40upx;
+	position: relative;
+}
+
+.input-group::before {
+	position: absolute;
+	right: 0;
+	top: 0;
+	left: 0;
+	height: 1upx;
+	content: '';
+	-webkit-transform: scaleY(.5);
+	transform: scaleY(.5);
+	background-color: #c8c7cc;
+}
+
+.input-group::after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	height: 1upx;
+	content: '';
+	-webkit-transform: scaleY(.5);
+	transform: scaleY(.5);
+	background-color: #c8c7cc;
+}
+
+.input-row {
+	display: flex;
+	flex-direction: row;
+	position: relative;
+}
+
+.input-row .title {
+	width: 30%;
+	height: 50upx;
+	min-height: 50upx;
+	padding: 15upx 0;
+	padding-left: 30upx;
+	line-height: 50upx;
+}
+
+.input-row.border::after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 15upx;
+	height: 1upx;
+	content: '';
+	-webkit-transform: scaleY(.5);
+	transform: scaleY(.5);
+	background-color: #c8c7cc;
+}
+
+// button
+.btn-row {
+	margin-top: 50upx;
+	padding: 20upx;
+}
+
+button.primary {
+	background-color: #1ab394!important;
+	color:$uni-color-white;
+}
+
+button.noBorder {
+	background-color: #FFFFFF!important;
+}
+
+button.noBorder::after {
+	border: 0upx!important
+}
+
+.input-view {
+	display: flex;
+	height: 100%;
+	border-radius: 15rpx;
+	padding: 10upx 4%;
+	flex-wrap: nowrap;
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: row;
+	align-items:center;
+}
+
+.input-view .input {
+	flex: 1;
+	width:100%;
+}

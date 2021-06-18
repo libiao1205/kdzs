@@ -22,6 +22,8 @@ public class RecruitSumStatisticsDetailDTO {
     private Double planAccomplishRate;
     private Integer rateType;
     private String cellBgColor;
+    private Integer recruitPlan;//是否招生
+    private String lastRecruitDate;//最后招生日期-- 管理员查看各分校是否按时填写招生人数
 
     public RecruitSumStatisticsDetailDTO(String name,Integer sort, Double recruitCount, Integer undergraduatePeople, Integer oldUndergraduatePeople, Integer technicalPeople, Integer oldTechnicalPeople, Integer gkPeople, Integer oldGkPeople, Double sumPeople, Double oldSumPeople) {
         this.name = name;
@@ -35,9 +37,10 @@ public class RecruitSumStatisticsDetailDTO {
         this.oldGkPeople = oldGkPeople;
         this.sumPeople = sumPeople;
         this.oldSumPeople = oldSumPeople;
+
     }
 
-    public RecruitSumStatisticsDetailDTO(String name,Integer sort, Double recruitCount, Integer undergraduatePeople, Integer technicalPeople, Integer gkPeople, Double sumPeople) {
+    public RecruitSumStatisticsDetailDTO(String name,Integer sort,Integer recruitPlan, Double recruitCount, Integer undergraduatePeople, Integer technicalPeople, Integer gkPeople, Double sumPeople,String lastRecruitDate) {
         this.name = name;
         this.sort = sort;
         this.recruitCount = recruitCount;
@@ -45,6 +48,8 @@ public class RecruitSumStatisticsDetailDTO {
         this.technicalPeople = technicalPeople;
         this.gkPeople = gkPeople;
         this.sumPeople = sumPeople;
+        this.recruitPlan = recruitPlan;
+        this.lastRecruitDate = lastRecruitDate;
     }
 
     public RecruitSumStatisticsDetailDTO() {

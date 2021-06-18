@@ -20,6 +20,7 @@ import java.util.*;
 @RestController
 @RequestMapping("kdzs/api/school/recruit")
 public class StatisticsController extends AbstractController<StatisticsController> {
+
     @Autowired
     RecruitStatisticsService recruitStatisticsService;
 
@@ -44,6 +45,7 @@ public class StatisticsController extends AbstractController<StatisticsControlle
             }
         );
     }
+
     @PostMapping(value = "/statisticsHomeAnime")
     public ResponseEntity<Result<RecruitSumStatisticsDTO>> getStatisticsHomeAnime(@RequestBody ReqRecruitStatisticsDTO reqRecruitStatisticsDTO) {
         return requestHandler.doPost(
@@ -65,6 +67,7 @@ public class StatisticsController extends AbstractController<StatisticsControlle
                 }
         );
     }
+
     @PostMapping(value = "/statisticsDetail")
     public ResponseEntity<Result<List<RecruitSumStatisticsDetailDTO>>> getStatisticsDetail(@RequestBody ReqRecruitStatisticsDTO reqRecruitStatisticsDTO) {
         return requestHandler.doPost(
@@ -82,31 +85,7 @@ public class StatisticsController extends AbstractController<StatisticsControlle
                     }
                     @Override
                     public List<RecruitSumStatisticsDetailDTO> response() throws Exception {
-                        return recruitStatisticsService.recruitStatisticsDetail(reqRecruitStatisticsDTO);
-                    }
-                }
-        );
-    }
-    @PostMapping(value = "/exportExcel")
-    public ResponseEntity<Result<RequestState>> exportExcel(@RequestBody ReqRecruitStatisticsDTO reqRecruitStatisticsDTO, HttpServletResponse response) {
-        return requestHandler.doPost(
-                new ResponseCallback<RequestState>() {
-                    @Override
-                    public RequestState doCheck()  {
-                        return RequestState.SUCCESS;
-                    }
-                    @Override
-                    public RequestState invoke() throws Exception {
-                        int flag = recruitStatisticsService.doExcel(reqRecruitStatisticsDTO,response);
-                        if(flag > 0){
-                            return RequestState.PARAM_PERMISSION_EXPORT_EXCEL_SUCCESS_SEASON;
-                        }else{
-                            return RequestState.PARAM_PERMISSION_EXPORT_EXCEL_UNSUCCESSFUL_SEASON;
-                        }
-                    }
-                    @Override
-                    public RequestState response()  {
-                        return RequestState.SUCCESS;
+                        return recruitStatisticsService.recruitStatisticsDetail(reqRecruitStatisticsDTO,true);
                     }
                 }
         );
@@ -129,6 +108,7 @@ public class StatisticsController extends AbstractController<StatisticsControlle
             recruitStatisticsService.doExcel(reqRecruitStatisticsDTO,response);
         }
     }
+
     @GetMapping(value = "/getAuthority")
     public ResponseEntity<Result<List<String>>> getStatisticsDetail() {
         return requestHandler.doPost(
@@ -150,4 +130,5 @@ public class StatisticsController extends AbstractController<StatisticsControlle
                 }
         );
     }
+
 }

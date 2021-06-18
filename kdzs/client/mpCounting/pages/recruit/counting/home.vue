@@ -1,19 +1,29 @@
 <template>
 	<view class="content">
-		<view class="fx-t-v w-100" style="position:fixed;top:0;background-color: #FFFFFF; z-index: 100;padding-top:15%">
+		<uni-icons type="back" size="30" @click="back" style="position:fixed;left:0%;top:4.5%;z-index: 110;"></uni-icons>
+		<view class="fx-t-v w-100" style="position:fixed;top:0;background-color: #FFFFFF; z-index: 100;padding-top:22%">
 			<image src="../../../static/img/logo.png" class="home-logo-title-img">
 			<hr class="hr-solid mr-t-xs">
-			<view v-if="currSeason" class="w-100 fx-t-v">
+			<view v-if="currSeason && token" class="w-100 fx-t-v">
 				<view class="fx-t-v mr-t-xs w-100 title-max-font">
 					{{recruitYear}}年{{recruitSeason}}招生
 				</view>
 				<view class="fx-l-v-bt mr-t-four w-90 ">
 					<view class="uni-list-cell-db">
-						<picker v-if="isPermissionCode('view')" @change="bindPickerChange" :value="index" :range="arrayInfo">
-							<view class="uni-input home-paicker fx-t-v color-title2" >{{arrayInfo[index]}}</view>
+						<picker v-if="isPermissionCode('view')" @change="bindPickerChange" :value="index" :range="arrayInfo" range-key="name">
+							<view class="fx-l-v-bt border" style="width:380upx;height:50upx">
+								<view class="uni-input color-title2 mr-l-min">{{arrayInfo[index].name}}</view>
+								<uni-icons  type="arrowdown"/>
+							</view>
+						</picker>
+						<picker v-if="getRoleCode(roles) === sumSchoolRoleCode" @change="sumSchoolPickerChange" :value="index" :range="sumSchool">
+							<view class="fx-l-v-bt border" style="width:380upx;height:50upx">
+								<view class="uni-input color-title2 mr-l-min">{{sumSchool[index]}}</view>
+								<uni-icons type="arrowdown"/>
+							</view>
 						</picker>
 						<view v-if="!isPermissionCode('view')" class="uni-list-cell-db mr-b-xs">
-							{{arrayOne.name}}
+							{{isNull(arrayOne.name)}}
 						</view>
 					</view>
 					<view class="uni-list-cell-left home-input fx-t-v line10">
@@ -22,11 +32,11 @@
 				</view>
 			</view>
 		</view>
-		<view class="fx-t" style="padding-top: 45%;">
+		<view class="fx-t" style="padding-top: 52%;">
 			<view class="fx-t-v font h-90">
 				<view class="uni-column fx-l-y-v mr-t-xs home-content pd-xs" >
 					<view class=" uni-row w-100">
-						<view v-if="currSeason">
+						<view v-if="currSeason && token">
 							<view class="flex-item uni-column mr-t-four">
 								<view class="fx-l-y-v-bt uni-row font-weight">
 									总招生人数	
@@ -55,7 +65,7 @@
 							</view>
 							<view class="flex-item uni-column mr-t-xs">
 								<view class="fx-l-y-v-bt uni-row color-title2 font-weight">
-									上开本科招生
+									本科招生
 								</view>
 								<view class="fx-l-y-v-bt uni-row retract color-title2 mr-t-min">
 										{{isUndefined(currYear.undergraduatePeople)}}人
@@ -81,7 +91,7 @@
 							</view>
 							<view class="flex-item uni-column mr-t-xs">
 								<view class="fx-l-y-v-bt uni-row color-title2 font-weight">
-									上开专科招生
+									专科招生
 								</view>
 								<view class="fx-l-y-v-bt uni-row retract color-title2 mr-t-min">
 										{{isUndefined(currYear.technicalPeople)}}人
@@ -105,7 +115,7 @@
 									<hr class="hr-dashed">
 								</view>
 							</view>
-							<view class="flex-item uni-column mr-t-xs">
+							<!-- <view class="flex-item uni-column mr-t-xs">
 								<view class="fx-l-y-v-bt uni-row color-title2 font-weight">
 									国开本科招生
 								</view>
@@ -130,9 +140,13 @@
 								<view class="flex-item uni-column mr-t-xs">
 									<hr class="hr-dashed">
 								</view>
-							</view>
+							</view>-->
+						</view> 
+						<view v-if="!token" class="home-content-font font-size-14 text-align w-100">
+							本系统仅供上海开放大学招生办使用<br>
+							请相关老师点击右下角“我的”进行登录
 						</view>
-						<view class="fx-l-y-v w-100 h-90" v-if="!currSeason" >
+						<view class="fx-l-y-v w-100 h-90" v-if="!currSeason && token" >
 							没有招生计划
 						</view>
 					</view>
@@ -146,8 +160,10 @@
 				<view class="fx-t-v" v-if="isPermissionCode('view')">
 					<button class="mini-btn mr-r-xs" :disabled="flag" type="primary"  @click="toAuthorize('countDetail',4)" size="mini">分校详情</button>
 				</view>
-				<view v-if="!isPermissionCode('view')">
+				<view class="fx-t-v" v-if="!isPermissionCode('view') && isPermissionCode('add')">
 					<button class="mini-btn mr-r-xs" :disabled="flag" type="primary"  @click="toAuthorize('countDetail')" size="mini">本校详情</button>
+				</view>
+				<view v-if="isPermissionCode('add') && !isPermissionCode('viewAll')">
 					<button  class="mini-btn" type="primary" :disabled="flag" @click="toAuthorize('counting')" size="mini">填报人数</button>
 				</view>
 			</view>
@@ -162,74 +178,98 @@
 		components: {uniIcons},
 		computed: {
 			...mapState({
-				hasLogin : state => state.auth.token,
+				hasLogin: state => state.auth.token,
+				sumSchool: state => state.constant.sumSchool,
+				sumSchoolRoleCode: state => state.constant.sumSchoolRoleCode
 			}),
 			...mapGetters({
-				isUndefined : 'constant/isUndefined',
-				isPermissionCode : 'constant/isPermissionCode',
-				getRecruitYear : 'constant/getRecruitYear',
-				getOnRecruitYear : 'constant/getOnRecruitYear',
-				getRecruitSeason : 'constant/getRecruitSeason',
-				getCurrDate : 'constant/getCurrDate',
+				isUndefined: 'constant/isUndefined',
+				isNull: 'constant/isNull',
+				isPermissionCode: 'constant/isPermissionCode',
+				getRecruitYear: 'constant/getRecruitYear',
+				getOnRecruitYear: 'constant/getOnRecruitYear',
+				getRecruitSeason: 'constant/getRecruitSeason',
+				getCurrDate: 'constant/getCurrDate',
+				getSumSchoolIds: 'constant/getSumSchoolIds',
+				getSchoolOne: 'constant/getSchoolOne',
+				selectSchoolId: 'constant/selectSchoolId',
 			}),
 		},
 		onShow(){
-			this.currSeason = uni.getStorageSync('currSeason') ;
-			if(this.currSeason === null || this.currSeason === ''){
-				this.flag = true;
-			}else{
-				this.flag = false;
-				this.recruitYear = this.getRecruitYear(this.currSeason);
-				this.recruitSeason = this.getRecruitSeason(this.currSeason);
-				this.onRecruitYear = this.getOnRecruitYear(this.currSeason);
-				this.doStatistics();
+			this.token = uni.getStorageSync('token');
+			if (this.token) {
+				this.loadCurrSeason().then((res) =>{
+					this.currSeason = res;
+					if(this.currSeason === null || this.currSeason === ''){
+						this.flag = true;
+					}else{
+						this.flag = false;
+						this.recruitYear = this.getRecruitYear(this.currSeason);
+						this.recruitSeason = this.getRecruitSeason(this.currSeason);
+						this.onRecruitYear = this.getOnRecruitYear(this.currSeason);
+						//更新学校列表
+						this.loadSchoolAll().then((res) =>{
+							this.arrayInfo = res;
+						});
+						this.loadSchoolOne().then(() =>{
+							this.arrayOne = this.getSchoolOne();
+						});
+						this.doStatistics();
+					}
+				})
 			}
 		},
-		created(){
-			this.currSeason = uni.getStorageSync('currSeason') ;
-			this.arrayInfo = uni.getStorageSync('schoolAll');
-			this.arrayOne = uni.getStorageSync('schoolOne');
-		},
 		async onLoad(option) {
-			if (!uni.getStorageSync('token')) {
+			this.roles = uni.getStorageSync('roles');
+			this.schoolIds = this.getSumSchoolIds();
+			/* if (!uni.getStorageSync('token')) {
 				uni.redirectTo({
 					url: '../../user/login'
 				});
-			}
+			} */
 			if(this.currSeason === null || this.currSeason === ''){
 				this.flag = true;
 			}
-			if(!this.isPermissionCode('view')){
-				if(this.arrayOne != null && this.arrayOne != '' ){
-					this.schoolId = this.arrayOne.schoolId;
-				}
-			}
+			
 			if(this.currSeason != null && this.currSeason != ''){
 				this.doStatistics();
 			}
+			this.loadSchoolOne().then(() =>{
+				this.arrayOne = this.getSchoolOne();
+				if(!this.isPermissionCode('view')){
+					if(this.arrayOne != null && this.arrayOne != '' ){
+						this.schoolId = this.arrayOne.schoolId;
+					}
+				}
+			});
 		},
 		data() {
 			return {
 				currYear:{},
 				oldYear:{},
 				arrayInfo: [],
-				arrayOne:{},
+				arrayOne:{name:''},
 				index: 0,
 				currSeason: [],
 				schoolId: 0,
+				schoolIds: '',//查总校下的四个分校
 				recruitYear : '',
 				recruitSeason : '',
 				onRecruitYear : '',
 				flag : false,
+				roles:{},
+				token:'',
 			}
 		},
 		methods:{
 			...mapActions({
 				loadCurrSeason: 'page/loadCurrSeason',
 				loadStatistics: 'page/loadStatistics',
+				loadSchoolAll: 'page/loadSchoolAll',
+				loadSchoolOne: 'page/loadSchoolOne',
 			}),
 			doStatistics(){
-				let data = {schoolId:this.schoolId,recruitSeason:this.currSeason.recruitSeason,
+				let data = {schoolId:this.schoolId,schoolIds:this.schoolIds,recruitSeason:this.currSeason.recruitSeason,
 							onRecruitYear:this.currSeason.onRecruitYear,
 							recruitYear:this.currSeason.recruitYear,
 							};
@@ -252,9 +292,26 @@
 			},
 			bindPickerChange: function(e) {
 				this.index = e.target.value;
-				this.schoolId = this.index;
+				this.schoolId = this.arrayInfo[parseInt(e.target.value)].schoolId;
 				this.doStatistics();
 			},
+			sumSchoolPickerChange: function(e) {
+				this.index = e.target.value;
+				this.schoolId = this.selectSchoolId(this.index);
+				this.doStatistics();
+			},
+			back(){
+				uni.redirectTo({
+					url: './homeAnime'
+				});
+			},
+			getRoleCode(roles){
+				if(roles[0] != undefined){
+					return roles[0].roleCode;
+				}else{
+					return "";
+				}
+			}
 		}
 	}
 </script>

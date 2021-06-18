@@ -8,6 +8,7 @@ import java.util.Date;
 @Data
 public class RecruitSumStatisticsDTO {
     private Double sumPeople;
+    private Double planSumPeople;
     private Double undergraduatePeople;
     private Double planUndergraduatePeople;
     private Double undergraduateRate;

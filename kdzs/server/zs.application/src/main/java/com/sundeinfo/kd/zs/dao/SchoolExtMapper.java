@@ -12,7 +12,7 @@ public interface SchoolExtMapper {
 
     List<SchoolDTO> selectCurrUserSchool(Integer userId,Integer seasonId);
 
-    List<String> selectSchoolAll();
+    List<SchoolDTO> selectSchoolAll(Integer seasonId);
 
     List<SchoolDTO> selectSchoolByNamePlan(Integer seasonId,String name);
 

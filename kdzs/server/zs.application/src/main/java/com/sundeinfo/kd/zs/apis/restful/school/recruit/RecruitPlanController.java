@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("kdzs/api/school/recruit")
 public class RecruitPlanController extends AbstractController<RecruitPlanController> {
+
     @Autowired
     RecruitPlanService recruitPlanService;
 
@@ -41,4 +42,5 @@ public class RecruitPlanController extends AbstractController<RecruitPlanControl
                 }
         );
     }
+
 }

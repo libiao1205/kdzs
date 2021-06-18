@@ -26,6 +26,15 @@ public class SchoolDTO {
 
     private Integer revise;
 
+    public SchoolDTO() {
+
+    }
+
+    public SchoolDTO(String name,Integer schoolId) {
+        this.schoolId = schoolId;
+        this.name = name;
+    }
+
     public SchoolDTO(Integer schoolId, String name, String shortname, Integer areaid,Integer recruitPlan,Integer recruitCount) {
         this.schoolId = schoolId;
         this.name = name;

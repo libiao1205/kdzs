@@ -16,6 +16,11 @@ const $http = function(options) {
     }
     _config.complete = response => {
     if (response.statusCode === 200) {
+		if(response.data.result === "700"){
+			uni.redirectTo({
+				url: '../../user/login'
+			});
+		}
         if (response.data && response.data.c && response.data.c > 90000) {
             uni.showToast({
             icon: 'none',
@@ -23,7 +28,7 @@ const $http = function(options) {
           })
         }
         resolve(response.data)
-    } else if(response.statusCode === 403){
+    } else if(response.statusCode === 403 ){
 		uni.redirectTo({
 			url: '../../user/login'
 		});

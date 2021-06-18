@@ -1,0 +1,17 @@
+{
+  "name": "mpCounting",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "@dcloudio/uni-ui": "^1.1.9",
+    "moment": "^2.25.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

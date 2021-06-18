@@ -1,0 +1,30 @@
+
+.title-msg{
+	color:rgb(249, 18, 34);
+	font-weight: 600;
+	text-align: center;
+	background-color: #EFEFF4;
+	padding: 5rpx;
+}
+.climber_box{
+	height:150rpx;
+	position: absolute;
+	left:0;
+	bottom: 20%;
+}
+.climber_box_ani {
+	-webkit-transition:all 15s ease-out;
+	transition:all 15s ease-out;
+}
+.climber-img{
+	width:150rpx;
+	height:150rpx;
+}
+.climber-flag{
+	width: 190rpx;
+	height: 260rpx;
+	position: absolute;
+	top:6%;
+	left:51%;
+}
+

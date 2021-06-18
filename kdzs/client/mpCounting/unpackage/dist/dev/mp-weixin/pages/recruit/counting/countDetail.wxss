@@ -1,0 +1,65 @@
+
+.th{
+	font:'MicrosoftYaHei';
+	font-size: 26rpx;
+	border-right:0.5rpx solid #d1d4d5;
+	border-bottom:0.5rpx solid #d1d4d5;
+	text-align: center;
+	font-weight: 500;
+}
+.left-title{
+	height: 200rpx;
+}
+.table-font{
+	background-color: #DEE1E4;
+}
+.th-width{
+	width:150rpx;
+}
+.td-width{
+	width:110rpx;
+}
+.gkHeight{
+	height:30%;
+}
+.th1{
+	height:140rpx;
+}
+.th2{
+	height:95rpx;
+}
+
+/* .th3{
+	height:65upx;
+} */
+
+/* .th4{
+	height:65upx;
+}
+.th5{
+	height:65upx;
+} */
+.th-1{
+	height:100rpx;
+	width:100rpx;
+}
+.th-2{
+	height:100rpx;
+	width:100rpx;
+}
+.td-1{
+	height:100rpx;
+}
+.td-2{
+	height:100rpx;
+}
+.th6{
+	height:105rpx;
+}
+.th7{
+	height:105rpx;
+}
+.th8{
+	height:105rpx;
+}
+

@@ -1,27 +1,20 @@
 <template>
 	<view class="w-100">
-		<image v-if="rate < 100" :src="img" class="posA" :style="'left:'+(mrLeft+(num*rate))+'%;bottom:'+(47/100*rate)+'%;height:'+(15-(6/100*rate))+'%;width:'+(20-(7/100*rate))+'%'"></image>
-		<image v-if="rate === 100" src="../static/img/climber-per.png" class="climber-per-img" :style="'left:'+perMrLeft+'%'"></image>
-		<view class="bar-box">
-			<view v-if="flag" class="progress-bar fx-l" :style="'top:'+barTop+'%'">
-				<view class="school-color" :style="'background-color: '+progressBarColor"></view>
-				<view>
-					{{schoolName}}：{{recruitPeople}}/{{planPeople}}
-				</view>
+		<image v-if="flag_show" :src="imageUrl+'/images/file?path=file/flag.png'" class="climber-flag"></image>
+		<view  class="climber_box" :style="'left:'+leftNum+'%;bottom:'+bottomNum+'%;'">
+			<view class="title-msg" v-if="flag">
+				{{recruitPeople}}/{{planPeople}}
 			</view>
-			<view v-if="!flag" class="w-100 h-100 fx-t-v-h color-w">
-				暂无计划
-			</view>
+			<image :src="img" class="climber-img"></image>
 		</view>
 	</view>
 </template>
 <script>
+	import climber_left from '../static/img/climber-son-left.gif'
+	import climber_right from '../static/img/climber-son-right.gif'
+	import _config from '../common/request/config.js'
 	export default {
 		props:{
-			img:{
-				type:String,
-				default:''
-			},
 			rate:{
 				type:Number,
 				default:0
@@ -34,63 +27,108 @@
 				type:String,
 				default:''
 			},
-			schoolName:{
-				type:String,
-				default:''
-			},
-			mrLeft:{
-				type:Number,
-				default:0
-			},
-			perMrLeft:{
-				type:Number,
-				default:0
-			},
-			barTop:{
-				type:Number,
-				default:0
-			},
-			progressBarColor:{
-				type:String,
-				default:'#0FAEFF'
-			},
-			num:{
-				type:Number,
-				default:0.25
-			},
 			flag:{
 				type:Boolean,
 				default:true
 			}
 		},
+		data(){
+			return{
+				leftNum: 0,
+				bottomNum: 5,
+				Interval:'',
+				bend: 0,
+				img:climber_left,
+				flag_show:false,
+				imageUrl : _config.imageUrl,
+			}
+		},
+		methods:{
+			start(){
+				this.leftNum = 4.5;
+				this.bottomNum = 5;
+				this.bend = 0;
+				this.Interval = setInterval(()=>{
+					if((100 * 0.71 + 5) <= this.bottomNum){
+						clearInterval(this.Interval);
+					}
+					if(this.bend === 0){
+						this.flag_show = false;
+						this.img = climber_left;
+						this.leftNum = this.leftNum + 0.6;
+						this.bottomNum = this.bottomNum + 0.3;
+						if(this.bottomNum >= (28.4)){
+							this.bend = 1;
+						}
+					}
+					if(this.bend === 1){ 
+						this.img = climber_right;
+						this.leftNum = this.leftNum - 0.3;
+						this.bottomNum = this.bottomNum + 0.4;
+						if(this.bottomNum >= 40){
+							this.bend = 2;
+						}
+					}
+					if(this.bend === 2){
+						this.img = climber_left;
+						this.leftNum = this.leftNum + 0.31;
+						this.bottomNum = this.bottomNum + 0.4;
+						if(this.bottomNum >= 63){
+							this.bend = 3;
+						}
+					}
+					if(this.bend === 3){
+						this.img = climber_right;
+						this.leftNum = this.leftNum - 0.42;
+						this.bottomNum = this.bottomNum + 0.3;
+						if(this.bottomNum >= 76){
+							clearInterval(this.Interval);
+							this.flag_show = true;
+						}
+					}
+				},100);
+			},
+			stop(){
+				clearInterval(this.Interval);
+			}
+		},
+		watch: {
+			//正确给 cData 赋值的 方法
+			rate: function(newVal,oldVal){
+				this.rate = newVal;  
+				this.rate ? this.start() : ''; 
+			}
+		},
+		
 	}
 </script>
 
 <style>
-	.climber-per-img{
-		position: absolute;
-		width: 16%;
-		height:10%;
-		top:37%;
+	.title-msg{
+		color:rgb(249, 18, 34);
+		font-weight: 600;
+		text-align: center;
+		background-color: #EFEFF4;
+		padding: 5upx;
 	}
-	.progress-bar{
-		width: 90%;
-		height:25%;
-		color:#FFFFFF;
+	.climber_box{
+		height:150upx;
 		position: absolute;
-		left: 3%;
+		left:0;
+		bottom: 20%;
 	}
-	.bar-box{
-		width:60%;
-		height:15%;
-		border:1px solid #D1D4D5;
+	.climber_box_ani {
+		transition:all 15s ease-out; 
+	}
+	.climber-img{
+		width:150upx;
+		height:150upx;
+	}
+	.climber-flag{
+		width: 190upx;
+		height: 260upx;
 		position: absolute;
-		top:5%;
-		left:3%;
-	}
-	.school-color{
-		width: 30upx;height: 30upx;
-		margin-top: 1.5%;
-		margin-right: 3%;
+		top:6%;
+		left:51%;
 	}
 </style>

@@ -30,7 +30,8 @@ public class SchoolRecruitPlanDTO  {
         this.recruitplan = recruitplan;
     }
 
-    public SchoolRecruitPlanDTO(Integer undergraduatepeople, Integer technicalpeople, Integer gkpeople) {
+    public SchoolRecruitPlanDTO(Integer recruitcount,Integer undergraduatepeople, Integer technicalpeople, Integer gkpeople) {
+        this.recruitcount = recruitcount;
         this.undergraduatepeople = undergraduatepeople;
         this.technicalpeople = technicalpeople;
         this.gkpeople = gkpeople;

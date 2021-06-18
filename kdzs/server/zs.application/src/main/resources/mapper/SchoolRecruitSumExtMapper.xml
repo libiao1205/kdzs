@@ -15,11 +15,13 @@
         <constructor>
             <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
             <arg column="sort" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="recruitPlan" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="recruitCount" javaType="java.lang.Double" jdbcType="INTEGER" />
             <arg column="undergraduatePeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="technicalPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="gkPeople" javaType="java.lang.Integer" jdbcType="INTEGER" />
             <arg column="sumPeople" javaType="java.lang.Double" jdbcType="INTEGER" />
+            <arg column="lastRecruitDate" javaType="java.lang.String" jdbcType="VARCHAR" />
         </constructor>
     </resultMap>
     <resultMap id="recruitCountMap" type="com.sundeinfo.kd.zs.dto.apis.school.RecruitSumStatisticsDTO">
@@ -32,14 +34,17 @@
 
 
   <select id="findAllStatistics" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultMap="BaseResultMap">
-      select (sum(resum.undergraduatePeople)+ sum(resum.technicalPeople)+sum(resum.gkPeople))sumPeople,
-      sum(resum.undergraduatePeople)undergraduatePeople,sum(resum.technicalPeople) technicalPeople,
-      sum(resum.gkPeople)gkPeople,season.recruitSeason,season.recruitYear from b_school_recruit_sum resum
-      join b_school_recruit_season season on resum.seasonId = season.id
-      join m_school school on resum.schoolId = school.id
+      select (sum(recount.undergraduatePeople)+ sum(recount.technicalPeople)+sum(recount.gkPeople))sumPeople,
+      sum(recount.undergraduatePeople)undergraduatePeople,sum(recount.technicalPeople) technicalPeople,
+      sum(recount.gkPeople)gkPeople,season.recruitSeason,season.recruitYear from b_school_recruit_counting recount
+      join b_school_recruit_season season on recount.seasonId = season.id
+      join m_school school on recount.schoolId = school.id
       where 1 = 1
       <if test="schoolId != null and schoolId != 0">
           and school.id = #{schoolId,jdbcType=INTEGER}
+      </if>
+      <if test="schoolIds != null and schoolIds != ''">
+          and school.id in ${schoolIds}
       </if>
       <if test="onRecruitYear != null">
           and season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP}
@@ -47,8 +52,15 @@
       <if test="recruitSeason != null">
           and season.recruitSeason = #{recruitSeason,jdbcType=INTEGER}
       </if>
+      <if test="currComparisonDate != null and currComparisonDate != ''">
+          and date_format(#{currComparisonDate,jdbcType=VARCHAR},'%Y-%m-%d') >= date_format(recount.recruitDate,'%Y-%m-%d')
+      </if>
+      <if test="oldComparisonDate != null and oldComparisonDate != ''"><!--后续需改为“>=”号-->
+          and date_format(#{oldComparisonDate,jdbcType=VARCHAR},'%Y-%m-%d') = date_format(recount.recruitDate,'%Y-%m-%d')
+      </if>
   </select>
-    <select id="findAllStatisticsDetail" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultMap="StatisticsDetailMap">
+    <!-- 根据总数统计-->
+    <!--<select id="findAllStatisticsDetail" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultMap="StatisticsDetailMap">
         select school.name,sg.sort,plan.recruitCount recruitCount,sum(resum.undergraduatePeople) undergraduatePeople,
         sum(resum.technicalPeople) technicalPeople,sum(resum.gkPeople) gkPeople,
         (sum(resum.undergraduatePeople)+sum(resum.technicalPeople)+sum(resum.gkPeople))sumPeople
@@ -63,11 +75,93 @@
         <if test="schoolId != null and schoolId != 0">
             and school.id = #{schoolId,jdbcType=INTEGER}
         </if>
+        <if test="schoolIds != null and schoolIds != ''">
+            and school.id in ${schoolIds}
+        </if>
+        group by school.id
+        order by sg.sort,school.sort,school.id
+    </select>-->
+    <!-- 根据当前日期统计-->
+    <select id="findAllStatisticsDetail" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultMap="StatisticsDetailMap">
+        select school.shortName name,sg.sort,plan.recruitPlan recruitPlan,plan.recruitCount recruitCount,sum(recount.undergraduatePeople) undergraduatePeople,
+        sum(recount.technicalPeople) technicalPeople,sum(recount.gkPeople) gkPeople,
+        (sum(recount.undergraduatePeople)+sum(recount.technicalPeople)+sum(recount.gkPeople))sumPeople,MAX(recount.recruitDate) lastRecruitDate
+        from m_school school
+        join b_school_recruit_plan plan on school.id = plan.schoolId join b_school_recruit_season season on plan.seasonId = season.id	and season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP} and season.recruitSeason = #{recruitSeason,jdbcType=TIMESTAMP}
+        left join b_school_recruit_counting recount on recount.schoolId = school.id and recount.seasonId = season.id
+        <if test="currComparisonDate != null and currComparisonDate != ''">
+          and date_format(#{currComparisonDate,jdbcType=VARCHAR},'%Y-%m-%d') >= date_format(recount.recruitDate,'%Y-%m-%d')
+        </if>
+        <if test="oldComparisonDate != null and oldComparisonDate != ''"><!--后续需改为“>=”号-->
+            and date_format(#{oldComparisonDate,jdbcType=VARCHAR},'%Y-%m-%d') = date_format(recount.recruitDate,'%Y-%m-%d')
+        </if>
+        join m_school_group_detail detail on school.id = detail.schoolId join m_school_group sg on detail.groupId = sg.id
+        where 1 = 1
+        <if test="sort != 0">
+            and sg.sort = #{sort,jdbcType=INTEGER}
+        </if>
+        <if test="schoolId != null and schoolId != 0">
+            and school.id = #{schoolId,jdbcType=INTEGER}
+        </if>
+        <if test="schoolIds != null and schoolIds != ''">
+            and school.id in ${schoolIds}
+        </if>
         group by school.id
         order by sg.sort,school.sort,school.id
     </select>
 
-    <select id="findAllStatisticsQuiJiCurrSeasonSumPeopleDetail" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultType="java.lang.Integer">
+    <!-- 招生计结束后用总人数表进行统计，防止校正人数后无响应-->
+    <select id="findAllStatisticsDetailSearchEnd" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultMap="StatisticsDetailMap">
+        select school.shortName name,sg.sort,plan.recruitPlan recruitPlan,plan.recruitCount recruitCount,sum(recount.undergraduatePeople) undergraduatePeople,
+        sum(recount.technicalPeople) technicalPeople,sum(recount.gkPeople) gkPeople,
+        (sum(recount.undergraduatePeople)+sum(recount.technicalPeople)+sum(recount.gkPeople))sumPeople,MAX(recount.createtime) lastRecruitDate
+        from m_school school
+        join b_school_recruit_plan plan on school.id = plan.schoolId join b_school_recruit_season season on plan.seasonId = season.id	and season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP} and season.recruitSeason = #{recruitSeason,jdbcType=TIMESTAMP}
+        left join b_school_recruit_sum recount on recount.schoolId = school.id and recount.seasonId = season.id
+        <if test="currComparisonDate != null and currComparisonDate != ''">
+            and date_format(#{currComparisonDate,jdbcType=VARCHAR},'%Y-%m-%d') >= date_format(recount.createtime,'%Y-%m-%d')
+        </if>
+        <if test="oldComparisonDate != null and oldComparisonDate != ''"><!--后续需改为“>=”号-->
+            and date_format(#{oldComparisonDate,jdbcType=VARCHAR},'%Y-%m-%d') = date_format(recount.createtime,'%Y-%m-%d')
+        </if>
+        join m_school_group_detail detail on school.id = detail.schoolId join m_school_group sg on detail.groupId = sg.id
+        where 1 = 1
+        <if test="sort != 0">
+            and sg.sort = #{sort,jdbcType=INTEGER}
+        </if>
+        <if test="schoolId != null and schoolId != 0">
+            and school.id = #{schoolId,jdbcType=INTEGER}
+        </if>
+        <if test="schoolIds != null and schoolIds != ''">
+            and school.id in ${schoolIds}
+        </if>
+        group by school.id
+        order by sg.sort,school.sort,school.id
+    </select>
+
+    <select id="findMaxDate" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultType="java.util.Date">
+        select max(date_format(counting.recruitDate,'%Y-%m-%d')) from b_school_recruit_counting counting join b_school_recruit_season season on counting.seasonId = season.id
+         where
+        <if test="currDate != null and currDate != ''">
+            date_format(#{currDate,jdbcType=TIMESTAMP},'%m-%d') >= date_format(counting.recruitDate,'%m-%d') and
+        </if>
+        <if test="currDate == null or currDate == ''">
+            date_format(now(),'%m-%d') >= date_format(counting.recruitDate,'%m-%d') and
+        </if>
+          season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP} and season.recruitSeason = #{recruitSeason,jdbcType=INTEGER}
+    </select>
+    <select id="findMinDate" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultType="java.util.Date">
+        select min(date_format(counting.recruitDate,'%Y-%m-%d')) from b_school_recruit_counting counting join b_school_recruit_season season on counting.seasonId = season.id
+        where
+        <if test="currDate != null and currDate != ''">
+            date_format(counting.recruitDate,'%m-%d') > date_format(#{currDate,jdbcType=TIMESTAMP},'%m-%d')
+        </if>
+        <if test="currDate == null or currDate == ''">
+            date_format(counting.recruitDate,'%m-%d') > date_format(now(),'%m-%d')
+        </if>
+        and season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP} and season.recruitSeason = #{recruitSeason,jdbcType=INTEGER}
+    </select>
+    <!--<select id="findAllStatisticsQuiJiCurrSeasonSumPeopleDetail" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultType="java.lang.Integer">
         select  (sum(resum.undergraduatePeople)+sum(resum.technicalPeople)+sum(resum.gkPeople))currSeasonSumPeople
         from m_school school
         join b_school_recruit_plan plan on school.id = plan.schoolId join b_school_recruit_season season on plan.seasonId = season.id	and season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP} and season.recruitSeason = #{recruitSeason,jdbcType=TIMESTAMP}
@@ -82,8 +176,30 @@
         </if>
         group by school.id
         order by sg.sort,school.sort,school.id
+    </select>-->
+    <select id="findAllStatisticsQuiJiCurrSeasonSumPeopleDetail" parameterType="com.sundeinfo.kd.zs.dto.apis.school.requestDto.ReqRecruitStatisticsDTO" resultType="java.lang.Integer">
+        select  (sum(recount.undergraduatePeople)+sum(recount.technicalPeople)+sum(recount.gkPeople))currSeasonSumPeople
+        from m_school school
+        join b_school_recruit_plan plan on school.id = plan.schoolId join b_school_recruit_season season on plan.seasonId = season.id	and season.recruitYear = #{recruitYear,jdbcType=TIMESTAMP} and season.recruitSeason = #{recruitSeason,jdbcType=TIMESTAMP}
+        left join b_school_recruit_counting recount on recount.schoolId = school.id and recount.seasonId = season.id
+        <if test="currComparisonDate != null and currComparisonDate != ''">
+            and date_format(#{currComparisonDate,jdbcType=VARCHAR},'%m-%d') >= date_format(recount.recruitDate,'%m-%d')
+        </if>
+        <if test="oldComparisonDate != null and oldComparisonDate != ''"><!--后续需改为“>=”号-->
+            and date_format(#{oldComparisonDate,jdbcType=VARCHAR},'%m-%d') = date_format(recount.recruitDate,'%m-%d')
+        </if>
+        join m_school_group_detail detail on school.id = detail.schoolId join m_school_group sg on detail.groupId = sg.id
+        where 1 = 1
+        <if test="sort != 0">
+            and sg.sort = #{sort,jdbcType=INTEGER}
+        </if>
+        <if test="schoolId != null and schoolId != 0">
+            and school.id = #{schoolId,jdbcType=INTEGER}
+        </if>
+        group by school.id
+        order by sg.sort,school.sort,school.id
     </select>
-    <select id="findAllRecruitCount" resultMap="recruitCountMap">
+    <!--<select id="findAllRecruitCount" resultMap="recruitCountMap">
         select sum(resum.undergraduatePeople)undergraduatePeople,sum(resum.technicalPeople) technicalPeople,
         sum(resum.gkPeople)gkPeople
         from b_school_recruit_sum resum
@@ -93,6 +209,30 @@
         </if>
         <if test="schoolId != null and schoolId != 0">
             and resum.schoolId = #{schoolId,jdbcType=INTEGER}
+        </if>
+        <if test="schoolIds != null and schoolIds != ''">
+            and resum.schoolId in ${schoolIds}
+        </if>
+    </select>-->
+    <select id="findAllRecruitCount" resultMap="recruitCountMap">
+        select sum(recount.undergraduatePeople)undergraduatePeople,sum(recount.technicalPeople) technicalPeople,
+        sum(recount.gkPeople)gkPeople
+        from b_school_recruit_counting recount
+        where 1 = 1
+        <if test="currComparisonDate != null and currComparisonDate != ''">
+            and date_format(#{currComparisonDate,jdbcType=VARCHAR},'%Y-%m-%d') >= date_format(recount.recruitDate,'%Y-%m-%d')
+        </if>
+        <if test="oldComparisonDate != null and oldComparisonDate != ''"><!--后续需改为“>=”号-->
+            and date_format(#{oldComparisonDate,jdbcType=VARCHAR},'%Y-%m-%d') = date_format(recount.recruitDate,'%Y-%m-%d')
+        </if>
+        <if test="seasonId != null and seasonId != 0">
+            and recount.seasonId = #{seasonId,jdbcType=INTEGER}
+        </if>
+        <if test="schoolId != null and schoolId != 0">
+            and recount.schoolId = #{schoolId,jdbcType=INTEGER}
+        </if>
+        <if test="schoolIds != null and schoolIds != ''">
+            and recount.schoolId in ${schoolIds}
         </if>
     </select>
 </mapper>

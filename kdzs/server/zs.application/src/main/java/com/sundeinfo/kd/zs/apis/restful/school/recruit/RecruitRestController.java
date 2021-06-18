@@ -26,10 +26,13 @@ import java.util.List;
 @RestController
 @RequestMapping("kdzs/api/school/recruit")
 public class RecruitRestController extends AbstractController<RecruitRestController> {
+
     @Autowired
     private SchoolRecruitService RecruitService;
+
     @Autowired
     private logService logService;
+
     @Autowired
     SchoolRecruitSumService schoolRecruitSumService;
 
@@ -57,6 +60,9 @@ public class RecruitRestController extends AbstractController<RecruitRestControl
         );
     }
 
+    /**
+     * 校正人数
+     * */
     @PreAuthorize(value = "hasAnyAuthority('" + PermissionCode.SCHOOL_RECRUIT_VIEW_ALL+ "','" + PermissionCode.SCHOOL_RECRUIT_VIEW_ALL + "')")
     @PostMapping(value = "/updateRecruitSum")
     public ResponseEntity<Result<RequestState>> updateRecruitSum(@RequestBody SchoolRecruitSum schoolRecruitSumModel) throws AuthenticationException {

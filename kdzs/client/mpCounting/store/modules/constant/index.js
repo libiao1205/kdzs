@@ -32,7 +32,10 @@ const state = {
 		{code: "add", value: "school:recruit:counting:add"},
 		{code: "view", value: "school:recruit:counting:view"},
 		{code: "viewAll", value: "school:recruit:counting:viewall"},
-	]
+		{code: "addSum", value: "school:recruit:counting:addsum"},
+	],
+	sumSchool:['总校','公共管理学院','经济管理学院','人文学院','理工学院'],
+	sumSchoolRoleCode: 'ROLE:RECRUIT:COUNTINGSUMSCHOOL'
 };
 
 const getters = {
@@ -182,6 +185,32 @@ const getters = {
 			return true;
 		}
 		return false;
+	},
+	getSumSchoolIds:(state) => () =>{
+		let roles = uni.getStorageSync('roles');
+		if(roles !=null && roles != '' && roles != []){
+			if(roles[0].roleCode === state.sumSchoolRoleCode){
+				return "(2,3,4,5)";
+			}
+		}
+		return "";
+	},
+	selectSchoolId:() => (index) =>{
+		if(index === "0"){
+			return 2;
+		}else if(index === "1"){
+			return 3;
+		}else if(index === "2"){
+			return 4;
+		}else if(index === "3"){
+			return 5;
+		}
+	},
+	getSchoolOne: () => () =>{
+		if(uni.getStorageSync('schoolOne')){
+			return uni.getStorageSync('schoolOne');
+		}
+		return {name:''};
 	}
 };
 

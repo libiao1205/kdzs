@@ -15,6 +15,10 @@
 				</view>
 				<button class="primary w-100 line45 mr-t-s" @click="loginByUsername" >登 录</button>
 			</view>
+			<view class="home-content-font font-size-14 text-align w-100">
+				功能介绍:设定招生计划、填报招生信息、查阅招生统计<br>
+				注:仅限上海开放大学招生填报使用。
+			</view>
 			<!-- <view class="fx-t-v-h">
 				<button class="fx-t-v-h noBorder" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" ><image src="../../static/img/wechat.png" class="small-icon" @click="toAuthorize" /></button>
 			</view> -->
@@ -47,9 +51,6 @@
 				registerPhone: 'auth/registerPhone',
 				loginUserName: 'auth/loginUserName',
 				loadPermissionCode: 'page/loadPermissionCode',
-				loadCurrSeason: 'page/loadCurrSeason',
-				loadSchoolAll: 'page/loadSchoolAll',
-				loadSchoolOne: 'page/loadSchoolOne',
 			}),
 			getPhoneNumber(e) {
 				if (!e.detail.encryptedData) return;
@@ -73,26 +74,15 @@
 				};
 				this.loginUserName(data).then((res) => {
 					if (res) {
-						this.loadPermissionCode().then((res) =>{
-							if(this.isPermissionCode('add') && !this.isPermissionCode('view')){
-								this.loadSchoolOne().then((res) =>{
-									uni.reLaunch({
-										url: '../recruit/counting/homeAnime',
-									});
-								});
-							}
-							if(this.isPermissionCode('view')){
-								this.loadSchoolAll().then((res) =>{
-									uni.reLaunch({
-										url: '../recruit/counting/homeAnime',
-									});
-								});
-							}
+						this.loadPermissionCode().then(() =>{
+							uni.reLaunch({
+								url: '../recruit/counting/homeAnime',
+							});
 						});
 					}
 				});
 			}
-        },
+        }
     }
 </script>
 

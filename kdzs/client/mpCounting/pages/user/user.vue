@@ -30,13 +30,16 @@
 				</view>
 			</view>
 		</view>
-		
+		<!-- <view class="fx-t bg-w mr-t-xs" @click="userAdmin">
+			<view class="pd-xs fx-t-v bd-b-1">
+				<text>修改密码</text>
+			</view>
+		</view> -->
 		<view class="fx-t bg-w mr-t-xs" @click="exitInfo">
 			<view class="pd-xs fx-t-v bd-b-1">
 				<text>退出程序</text>
 			</view>
 		</view>
-		
     </view>
 </template>
 
@@ -49,17 +52,18 @@
 			comPopupBottom,
 			uniIcons,
 		},
-		onLoad() {
+		onShow() {
 			this.hasLogin = uni.getStorageSync('token');
 			this.userName = uni.getStorageSync('userName');
 			this.organizations = uni.getStorageSync('organizations');
-		},
-		onShow() {
 			if(this.organizations == null){
 				this.organization = "";
 				return ;
 			}
-			this.organization = this.organizations[0].name;
+			if(this.organizations ) {
+				this.organization = this.organizations[0].name;
+			}
+			
 		},
 		computed: {
 			...mapGetters({
@@ -69,7 +73,7 @@
 		},
 		data() {
 			return {
-				organizations:[],
+				organizations:[{name:""}],
 				organization: "",
 				hasLogin: "",
 				userName: "",
@@ -85,6 +89,9 @@
 			exitInfo(){
 				this.logout();
 				uni.navigateTo({url: './login'});
+			},
+			userAdmin(){
+				uni.navigateTo({url: './userAdmin'});
 			}
         },
     }

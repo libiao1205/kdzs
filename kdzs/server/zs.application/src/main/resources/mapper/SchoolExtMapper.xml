@@ -34,6 +34,13 @@
     </constructor>
   </resultMap>
 
+  <resultMap id="SchoolMap" type="com.sundeinfo.kd.zs.dto.apis.school.SchoolDTO">
+    <constructor>
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="schoolId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+
   <select id="selectCurrUserSchool" resultMap="BaseResultMap">
     select s.id schoolId, s.name, s.shortName, s.areaId,plan.recruitPlan,plan.recruitCount from u_user u
     join b_school_teacher b on u.id = b.userId join m_school s on b.schoolId = s.id
@@ -41,8 +48,9 @@
     where plan.seasonId = #{seasonId,jdbcType=INTEGER} and u.id = #{userId,jdbcType=INTEGER}
   </select>
 
-  <select id="selectSchoolAll" resultType="java.lang.String">
-    select school.name from m_school school
+  <select id="selectSchoolAll" parameterType="java.lang.Integer" resultMap="SchoolMap">
+    select school.shortName name,school.id schoolId from m_school school join b_school_recruit_plan plan on school.id = plan.schoolId where plan.seasonId = #{seasonId,jdbcType=VARCHAR} and plan.recruitPlan = 1
+    order by address asc
   </select>
 
 

@@ -13,8 +13,10 @@ import java.util.List;
 
 @Service
 public class SchoolRecruitService extends AbstractService<SchoolRecruitService>{
+
     @Resource
     private SchoolRecruitCountingMapper schoolRecruitCountingMapper;
+
     @Resource
     SchoolRecruitCountingExtMapper  schoolRecruitCountingExtMapper;
 
@@ -25,4 +27,5 @@ public class SchoolRecruitService extends AbstractService<SchoolRecruitService>{
     public List<SchoolRecruitCounting> queryRecruitCountingKey(ReqRecruitCountingSearchDTO reqRecruitCountingSearchDTO){
         return schoolRecruitCountingExtMapper.queryByPrimaryKey(reqRecruitCountingSearchDTO);
     }
+
 }
