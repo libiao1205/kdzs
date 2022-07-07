@@ -5,7 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "@dcloudio/uni-ui": "^1.1.9",
-    "moment": "^2.25.3"
+    "moment": "^2.29.4"
   },
   "devDependencies": {},
   "scripts": {
